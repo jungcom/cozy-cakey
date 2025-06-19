@@ -1,8 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import CakeCard from './ui/CakeCard';
 
 const cakes = [
   {
@@ -50,33 +48,25 @@ const cakes = [
 ];
 
 export default function FeaturedCakes() {
-  const [imageError, setImageError] = useState<Record<number, boolean>>({});
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center text-amber-800 mb-12">Our Signature Cakes</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <section className="relative overflow-hidden py-16 bg-background1">
+      <div className="absolute inset-0 flex items-center justify-center opacity-5">
+        <span className="text-7xl md:text-9xl font-bold whitespace-nowrap font-dancing-script text-tertiary/30">
+          Our Cakes
+        </span>
+      </div>
+      <div className="container mx-auto px-4 relative z-10">
+        <h2 className="text-4xl md:text-5xl font-bold text-center text-tertiary mb-12">Our Signature Cakes</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 bg-white/80 backdrop-blur-sm p-8 rounded-xl shadow-lg">
           {cakes.map((cake) => (
-            <div key={cake.id} className="bg-amber-50 rounded-lg p-6 text-center shadow-md hover:shadow-lg transition-shadow">
-              <div className="h-48 relative bg-amber-100 rounded-md mb-4 overflow-hidden">
-                <Image
-                  src={imageError[cake.id] ? '/images/placeholder-cake.svg' : cake.image}
-                  alt={cake.alt}
-                  fill
-                  className="object-cover"
-                  onError={() => setImageError(prev => ({ ...prev, [cake.id]: true }))}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              </div>
-              <h3 className="text-xl font-semibold text-amber-900 mb-2">{cake.name}</h3>
-              <p className="text-amber-700 mb-4">{cake.description}</p>
-              <Link 
-                href={`/cakes/${cake.id}`}
-                className="inline-block bg-amber-600 text-white px-6 py-2 rounded-full hover:bg-amber-700 transition-colors"
-              >
-                View Details
-              </Link>
-            </div>
+            <CakeCard
+              key={cake.id}
+              id={cake.id}
+              name={cake.name}
+              description={cake.description}
+              image={cake.image}
+              alt={cake.alt}
+            />
           ))}
         </div>
       </div>

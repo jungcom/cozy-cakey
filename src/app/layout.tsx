@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Dancing_Script } from "next/font/google";
+import { Geist, Geist_Mono, Pacifico } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 
-const dancingScript = Dancing_Script({
+const pacifico = Pacifico({
+  weight: '400',
   subsets: ["latin"],
-  variable: "--font-dancing-script",
+  variable: "--font-pacifico",
   display: "swap",
 });
 
@@ -32,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${dancingScript.variable} antialiased bg-gray-50 flex flex-col min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} antialiased bg-gray-50 flex flex-col min-h-screen`}
       >
         <NavBar />
         <main className="flex-grow">
