@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#FEF3C7"/>
+  
+  <!-- Cake base -->
+  <rect x="200" y="300" width="400" height="200" rx="15" fill="#FCD34D" stroke="#D97706" stroke-width="4"/>
+  
+  <!-- Cake top -->
+  <rect x="250" y="250" width="300" height="50" rx="25" fill="#FBBF24" stroke="#B45309" stroke-width="4"/>
+  
+  <!-- Decoration -->
+  <circle cx="300" cy="275" r="10" fill="#F87171"/>
+  <circle cx="380" cy="265" r="12" fill="#60A5FA"/>
+  <circle cx="450" cy="270" r="8" fill="#34D399"/>
+  <circle cx="520" cy="265" r="10" fill="#F472B6"/>
+  
+  <!-- Text -->
+  <text x="400" y="400" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#92400E">Cake Image</text>
+  <text x="400" y="430" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#92400E">Coming Soon</text>
+  
+  <!-- Decorative elements -->
+  <path d="M250 300 Q400 250 550 300" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M250 350 Q400 300 550 350" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" fill="none" stroke-dasharray="5,5"/>
+</svg>
