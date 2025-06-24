@@ -1,33 +1,33 @@
 'use client';
 
-import CakeCard from './ui/CakeCard';
+import CakeCard from '../ui/CakeCard';
 
 const cakes = [
   {
     id: 1,
-    name: 'Bead Cake',
-    description: 'Elegant cake decorated with delicate sugar beads',
+    name: 'Design cakes',
+    description: 'Perfect design cakes for any occasion',
     image: '/images/cakes/bead-cake.jpg',
     alt: 'Elegant cake with delicate sugar bead decorations'
   },
   {
     id: 2,
-    name: 'Big Bow Cake',
-    description: 'Stunning cake featuring a large fondant bow decoration',
+    name: 'Two tiered special cakes',
+    description: 'Perfect two tiered cakes for any occasion',
     image: '/images/cakes/big-bow-cake.jpg',
     alt: 'Cake with large fondant bow decoration'
   },
   {
     id: 3,
-    name: 'Bow Cake',
-    description: 'Beautiful cake adorned with dainty fondant bows',
+    name: 'Catering',
+    description: 'Perfect catering cakes for any occasion',
     image: '/images/cakes/bow-cake.jpg',
     alt: 'Cake with dainty fondant bows'
   },
   {
     id: 4,
-    name: 'Bday Bunny Cake',
-    description: 'Adorable bunny-themed cake perfect for birthdays',
+    name: 'Gift sets',
+    description: 'Perfect gift sets for any occasion',
     image: '/images/cakes/bday-bunny-cake.jpg',
     alt: 'Bunny-themed birthday cake'
   }

@@ -1,8 +1,8 @@
-import Hero from '@/components/Hero';
-import FeaturedCakes from '@/components/FeaturedCakes';
-import ScheduleCalendar from '@/components/ScheduleCalendar';
-import AboutSection from '@/components/AboutSection';
-import Contacts from '@/components/Contacts';
+import Hero from '@/components/MainPage/Hero';
+import FeaturedCakes from '@/components/MainPage/FeaturedCakes';
+import ScheduleCalendar from '@/components/MainPage/ScheduleCalendar';
+import AboutSection from '@/components/MainPage/AboutSection';
+import Contacts from '@/components/MainPage/Contacts';
 
 export default function Home() {
   return (

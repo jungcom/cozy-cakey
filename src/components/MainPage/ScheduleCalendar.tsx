@@ -1,8 +1,8 @@
 'use client';
 
-import Calendar14 from './ui/calendar-14';
+import Calendar14 from '../ui/calendar-14';
 import { FaClock } from 'react-icons/fa';
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 export default function ScheduleCalendar() {
   const handleDateSelect = (date: Date) => {

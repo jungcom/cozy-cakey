@@ -1,11 +1,11 @@
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
 export default function Hero() {
   return (
     <div className="relative overflow-hidden bg-gradient-to-r from-primary to-secondary text-foreground py-48 md:py-64 px-4">
       {/* Background Text */}
       <div className="absolute inset-0 flex items-center justify-center opacity-5">
-        <span className="text-7xl md:text-9xl font-bold whitespace-nowrap font-dancing-script text-tertiary/30">
+        <span className="text-7xl md:text-9xl font-bold whitespace-nowrap font-pacifico text-tertiary/30">
           Cozy Cakey
         </span>
       </div>
