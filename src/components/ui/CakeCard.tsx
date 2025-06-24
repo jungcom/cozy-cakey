@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from './button';
 
 type CakeCardProps = {
-  id: number;
+  id: string;
   name: string;
   description: string;
   image: string;

@@ -11,6 +11,7 @@ export default function Calendar14() {
   // Function to check if a date is Sunday
   const isSunday = (date: Date) => date.getDay() === 0
   const isSaturday = (date: Date) => date.getDay() === 6;
+  const isMonday = (date: Date) => date.getDay() === 1;
   const isPastDate = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset time part for accurate date comparison
@@ -23,7 +24,7 @@ export default function Calendar14() {
       defaultMonth={date}
       selected={date}
       onSelect={setDate}
-      disabled={(date) => isSunday(date) || isSaturday(date) || isPastDate(date)}
+      disabled={(date) => isSunday(date) || isSaturday(date) || isPastDate(date) || isMonday(date)}
       modifiers={{
         booked: isSaturday,
       }}

@@ -1,10 +1,10 @@
 'use client';
 
 import { ShoppingCart } from 'lucide-react';
-import { CakeType, Size } from './types';
+import { CakeCategory, Size } from '@/data/cakes';
 
 interface OrderSummaryProps {
-  cakeTypes: CakeType[];
+  cakeTypes: CakeCategory[];
   selectedCake: string;
   selectedFlavor: string;
   sizes: Size[];

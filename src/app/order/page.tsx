@@ -5,49 +5,8 @@ import { Info } from 'lucide-react';
 import { CakeSelect } from '@/components/OrderPage/CakeSelect';
 import { PickupDetails } from '@/components/OrderPage/PickupDetails';
 import { OrderSummary } from '@/components/OrderPage/OrderSummary';
-import type { CakeType, Size } from '@/components/OrderPage/types';
+import { cakeCategories, sizes } from '@/data/cakes';
 
-const cakeTypes: CakeType[] = [
-  {
-    id: 'design',
-    name: 'Design Cake',
-    price: 45,
-    description: 'Custom designed cake with your choice of decoration'
-  },
-  {
-    id: 'two-tiered',
-    name: 'Two-Tiered Cake',
-    price: 85,
-    description: 'Elegant two-tiered cake perfect for celebrations'
-  },
-  {
-    id: 'catering',
-    name: 'Catering Cake',
-    price: 120,
-    description: 'Large cake suitable for events and parties (serves 50+)'
-  },
-  {
-    id: 'gift',
-    name: 'Gift Set',
-    price: 35,
-    description: 'Small cake with gift wrapping and a personal message'
-  },
-];
-
-const flavors = [
-  'Vanilla',
-  'Chocolate',
-  'Strawberry',
-  'Red Velvet',
-  'Carrot',
-  'Lemon',
-];
-
-const sizes = [
-  { id: 'small', name: 'Small (6")', servings: '6-8', price: 0 },
-  { id: 'medium', name: 'Medium (8")', servings: '10-12', price: 15 },
-  { id: 'large', name: 'Large (10")', servings: '16-20', price: 30 },
-];
 
 export default function OrderPage() {
   const [selectedCake, setSelectedCake] = useState('');
@@ -61,7 +20,7 @@ export default function OrderPage() {
 
   const calculateTotal = () => {
     let total = 0;
-    const cakeType = cakeTypes.find(cake => cake.id === selectedCake);
+    const cakeType = cakeCategories.find(cake => cake.id === selectedCake);
     if (cakeType) total += cakeType.price;
     
     const size = sizes.find(size => size.id === selectedSize);
@@ -74,7 +33,7 @@ export default function OrderPage() {
     e.preventDefault();
     // Handle form submission here
     console.log({
-      cake: cakeTypes.find(c => c.id === selectedCake)?.name,
+      cake: cakeCategories.find(c => c.id === selectedCake)?.name,
       flavor: selectedFlavor,
       size: sizes.find(s => s.id === selectedSize)?.name,
       message,
@@ -85,7 +44,7 @@ export default function OrderPage() {
     alert('Order submitted successfully!');
   };
 
-  const isFormValid = selectedCake && selectedFlavor && selectedSize && selectedDate && name && email && phone;
+  const isFormValid = Boolean(selectedCake && selectedFlavor && selectedSize && selectedDate && name && email && phone);
 
   return (
     <div className="min-h-screen bg-amber-50 py-12 px-4">
@@ -98,7 +57,7 @@ export default function OrderPage() {
           {/* Left Column - Order Form */}
           <div className="lg:col-span-2 space-y-8">
             <CakeSelect
-              cakeTypes={cakeTypes}
+              cakeTypes={cakeCategories}
               selectedCake={selectedCake}
               onCakeSelect={setSelectedCake}
               sizes={sizes}
@@ -124,7 +83,7 @@ export default function OrderPage() {
           
           {/* Right Column - Order Summary */}
           <OrderSummary
-            cakeTypes={cakeTypes}
+            cakeTypes={cakeCategories}
             selectedCake={selectedCake}
             selectedFlavor={selectedFlavor}
             sizes={sizes}
@@ -132,7 +91,7 @@ export default function OrderPage() {
             message={message}
             selectedDate={selectedDate}
             calculateTotal={calculateTotal}
-            isFormValid={!!isFormValid}
+            isFormValid={isFormValid}
             onSubmit={handleSubmit}
           />
         </form>

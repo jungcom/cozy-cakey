@@ -22,7 +22,7 @@ export default function ScheduleCalendar() {
             <h3 className="text-xl font-semibold text-tertiary mb-4">Booking Information</h3>
             <p className="text-foreground mb-4">
               Select an available date to book your cake. We're available Tuesday through Saturday, 
-              with pickup times between 9 AM and 5 PM.
+              with pickup times between 10 AM and 8 PM.
             </p>
             
             <div className="flex items-center justify-between mt-6 pt-6 border-t border-primary/10">

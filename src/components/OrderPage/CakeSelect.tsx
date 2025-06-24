@@ -1,10 +1,10 @@
 'use client';
 
 import { Cake } from 'lucide-react';
-import { CakeType, Size } from './types';
+import { CakeCategory, Size, cakeFlavors, CakeFlavor } from '@/data/cakes';
 
 interface CakeSelectProps {
-  cakeTypes: CakeType[];
+  cakeTypes: CakeCategory[];
   selectedCake: string;
   onCakeSelect: (id: string) => void;
   sizes: Size[];
@@ -16,18 +16,6 @@ interface CakeSelectProps {
   onMessageChange: (message: string) => void;
 }
 
-const flavors = [
-  'Vanilla',
-  'Chocolate',
-  'Strawberry',
-  'Red Velvet',
-  'Lemon',
-  'Carrot',
-  'Funfetti',
-  'Marble',
-  'Coconut',
-  'Coffee'
-];
 
 export function CakeSelect({
   cakeTypes,
@@ -73,7 +61,7 @@ export function CakeSelect({
         <div className="mb-6">
           <label className="block text-gray-700 mb-3 font-medium">Flavor</label>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {flavors.map((flavor) => (
+            {cakeFlavors.map((flavor) => (
               <button
                 key={flavor}
                 type="button"
