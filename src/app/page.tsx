@@ -1,3 +1,5 @@
+'use client';
+
 import Hero from '@/components/MainPage/Hero';
 import FeaturedCakes from '@/components/MainPage/FeaturedCakes';
 import ScheduleCalendar from '@/components/MainPage/ScheduleCalendar';
