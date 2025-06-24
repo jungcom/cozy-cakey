@@ -30,21 +30,8 @@ const cakes = [
     description: 'Adorable bunny-themed cake perfect for birthdays',
     image: '/images/cakes/bday-bunny-cake.jpg',
     alt: 'Bunny-themed birthday cake'
-  },
-  {
-    id: 5,
-    name: 'Simply Cake',
-    description: 'Classic and elegant, simply delicious',
-    image: '/images/cakes/simply-cake.jpg',
-    alt: 'Simple and elegant cake'
-  },
-  {
-    id: 6,
-    name: 'Tiara Cake',
-    description: 'Regal cake featuring a beautiful tiara decoration',
-    image: '/images/cakes/tiara-cake.jpg',
-    alt: 'Elegant cake with tiara decoration'
-  },
+  }
+
 ];
 
 export default function FeaturedCakes() {
@@ -57,7 +44,7 @@ export default function FeaturedCakes() {
       </div>
       <div className="container mx-auto px-4 relative z-10">
         <h2 className="text-4xl md:text-5xl font-bold text-center text-tertiary mb-12">Our Signature Cakes</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 bg-white/80 backdrop-blur-sm p-8 rounded-xl shadow-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 bg-white/80 backdrop-blur-sm p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
           {cakes.map((cake) => (
             <CakeCard
               key={cake.id}

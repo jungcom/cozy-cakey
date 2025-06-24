@@ -1,200 +1,210 @@
-'use client';
+"use client"
 
-import { useState, useEffect } from 'react';
+import * as React from "react"
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "lucide-react"
+import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker"
 
-type DayInfo = {
-  date: Date;
-  dayOfMonth: number;
-  isCurrentMonth: boolean;
-  isToday: boolean;
-  isAvailable: boolean;
-};
+import { cn } from "@/lib/utils"
+import { Button, buttonVariants } from "@/components/ui/button"
 
-type CalendarProps = {
-  onDateSelect?: (date: Date) => void;
-  className?: string;
-};
-
-export default function Calendar({ onDateSelect, className = '' }: CalendarProps) {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [days, setDays] = useState<DayInfo[]>([]);
-  const [monthName, setMonthName] = useState('');
-  const [year, setYear] = useState(0);
-  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-  useEffect(() => {
-    generateCalendarDays();
-  }, [currentDate]);
-
-  const generateCalendarDays = () => {
-    const firstDayOfMonth = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1
-    );
-    
-    const lastDayOfMonth = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      0
-    );
-
-    setMonthName(firstDayOfMonth.toLocaleString('default', { month: 'long' }));
-    setYear(firstDayOfMonth.getFullYear());
-
-    const startDay = firstDayOfMonth.getDay();
-    const prevMonthDays = startDay === 0 ? 6 : startDay - 1;
-    const daysArray: DayInfo[] = [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // Add days from previous month
-    for (let i = prevMonthDays; i > 0; i--) {
-      const date = new Date(firstDayOfMonth);
-      date.setDate(-i + 1);
-      daysArray.push({
-        date,
-        dayOfMonth: date.getDate(),
-        isCurrentMonth: false,
-        isToday: false,
-        isAvailable: false
-      });
-    }
-
-    // Add days from current month
-    for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
-      const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
-      const isSunday = date.getDay() === 0;
-      const isPastDate = date < today;
-      
-      daysArray.push({
-        date,
-        dayOfMonth: i,
-        isCurrentMonth: true,
-        isToday: date.toDateString() === today.toDateString(),
-        isAvailable: !isSunday && !isPastDate
-      });
-    }
-
-    // Add days from next month to complete the grid
-    const remainingDays = 7 - (daysArray.length % 7);
-    if (remainingDays < 7) {
-      for (let i = 1; i <= remainingDays; i++) {
-        const date = new Date(lastDayOfMonth);
-        date.setDate(lastDayOfMonth.getDate() + i);
-        daysArray.push({
-          date,
-          dayOfMonth: date.getDate(),
-          isCurrentMonth: false,
-          isToday: false,
-          isAvailable: false
-        });
-      }
-    }
-
-    setDays(daysArray);
-  };
-
-  const navigateMonth = (direction: 'prev' | 'next') => {
-    const newDate = new Date(currentDate);
-    newDate.setMonth(direction === 'prev' ? newDate.getMonth() - 1 : newDate.getMonth() + 1);
-    setCurrentDate(newDate);
-  };
-
-  const handleDateClick = (day: DayInfo) => {
-    if (day.isAvailable && onDateSelect) {
-      onDateSelect(day.date);
-    }
-  };
+function Calendar({
+  className,
+  classNames,
+  showOutsideDays = true,
+  captionLayout = "label",
+  buttonVariant = "ghost",
+  formatters,
+  components,
+  ...props
+}: React.ComponentProps<typeof DayPicker> & {
+  buttonVariant?: React.ComponentProps<typeof Button>["variant"]
+}) {
+  const defaultClassNames = getDefaultClassNames()
 
   return (
-    <div className={`bg-white rounded-lg shadow-lg overflow-hidden border border-primary/20 ${className}`}>
-      {/* Calendar Header */}
-      <div className="flex items-center justify-between px-6 py-4 bg-tertiary">
-        <button 
-          onClick={() => navigateMonth('prev')}
-          className="p-2 rounded-full hover:bg-primary/80 transition-colors text-white"
-          aria-label="Previous month"
-        >
-          &larr;
-        </button>
-        <h3 className="text-xl font-semibold text-white">
-          {monthName} {year}
-        </h3>
-        <button 
-          onClick={() => navigateMonth('next')}
-          className="p-2 rounded-full hover:bg-primary/80 transition-colors text-white"
-          aria-label="Next month"
-        >
-          &rarr;
-        </button>
-      </div>
-      
-      {/* Day Names */}
-      <div className="grid grid-cols-7 bg-primary/10">
-        {dayNames.map((day) => (
-          <div key={day} className="py-2 text-center text-tertiary font-medium text-sm">
-            {day.toUpperCase()}
-          </div>
-        ))}
-      </div>
-      
-      {/* Calendar Grid */}
-      <div className="grid grid-cols-7">
-        {days.map((day, index) => {
-          let dayClass = 'p-3 text-center h-16 flex flex-col items-center justify-center border border-primary/10 transition-all duration-200';
-          
-          if (!day.isCurrentMonth) {
-            dayClass += ' text-foreground/30 bg-white';
-          } else if (day.isToday) {
-            dayClass += ' bg-secondary text-white font-semibold';
-          } else if (day.isAvailable) {
-            dayClass += ' bg-white hover:bg-primary/5 cursor-pointer text-foreground';
-          } else {
-            dayClass += ' bg-white text-foreground/30';
-          }
-          
-          if (day.date.getDay() === 0) { // Sunday
-            dayClass += ' bg-background1 text-foreground/30';
-          }
-          
-          if (day.isCurrentMonth) {
-            dayClass += ' shadow-sm';
-          }
-          
+    <DayPicker
+      showOutsideDays={showOutsideDays}
+      className={cn(
+        "bg-background group/calendar p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+        String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
+        String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
+        className
+      )}
+      captionLayout={captionLayout}
+      formatters={{
+        formatMonthDropdown: (date) =>
+          date.toLocaleString("default", { month: "short" }),
+        ...formatters,
+      }}
+      classNames={{
+        root: cn("w-fit", defaultClassNames.root),
+        months: cn(
+          "flex gap-4 flex-col md:flex-row relative",
+          defaultClassNames.months
+        ),
+        month: cn("flex flex-col w-full gap-4", defaultClassNames.month),
+        nav: cn(
+          "flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-between",
+          defaultClassNames.nav
+        ),
+        button_previous: cn(
+          buttonVariants({ variant: buttonVariant }),
+          "size-(--cell-size) aria-disabled:opacity-50 p-0 select-none",
+          defaultClassNames.button_previous
+        ),
+        button_next: cn(
+          buttonVariants({ variant: buttonVariant }),
+          "size-(--cell-size) aria-disabled:opacity-50 p-0 select-none",
+          defaultClassNames.button_next
+        ),
+        month_caption: cn(
+          "flex items-center justify-center h-(--cell-size) w-full px-(--cell-size)",
+          defaultClassNames.month_caption
+        ),
+        dropdowns: cn(
+          "w-full flex items-center text-sm font-medium justify-center h-(--cell-size) gap-1.5",
+          defaultClassNames.dropdowns
+        ),
+        dropdown_root: cn(
+          "relative has-focus:border-ring border border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] rounded-md",
+          defaultClassNames.dropdown_root
+        ),
+        dropdown: cn("absolute inset-0 opacity-0", defaultClassNames.dropdown),
+        caption_label: cn(
+          "select-none font-medium",
+          captionLayout === "label"
+            ? "text-sm"
+            : "rounded-md pl-2 pr-1 flex items-center gap-1 text-sm h-8 [&>svg]:text-muted-foreground [&>svg]:size-3.5",
+          defaultClassNames.caption_label
+        ),
+        table: "w-full border-collapse",
+        weekdays: cn("flex", defaultClassNames.weekdays),
+        weekday: cn(
+          "text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] select-none",
+          defaultClassNames.weekday
+        ),
+        week: cn("flex w-full mt-2", defaultClassNames.week),
+        week_number_header: cn(
+          "select-none w-(--cell-size)",
+          defaultClassNames.week_number_header
+        ),
+        week_number: cn(
+          "text-[0.8rem] select-none text-muted-foreground",
+          defaultClassNames.week_number
+        ),
+        day: cn(
+          "relative w-full h-full p-0 text-center [&:first-child[data-selected=true]_button]:rounded-l-md [&:last-child[data-selected=true]_button]:rounded-r-md group/day aspect-square select-none",
+          defaultClassNames.day
+        ),
+        range_start: cn(
+          "rounded-l-md bg-accent",
+          defaultClassNames.range_start
+        ),
+        range_middle: cn("rounded-none", defaultClassNames.range_middle),
+        range_end: cn("rounded-r-md bg-accent", defaultClassNames.range_end),
+        today: cn(
+          "bg-accent text-accent-foreground rounded-md data-[selected=true]:rounded-none",
+          defaultClassNames.today
+        ),
+        outside: cn(
+          "text-muted-foreground aria-selected:text-muted-foreground",
+          defaultClassNames.outside
+        ),
+        disabled: cn(
+          "text-muted-foreground opacity-50",
+          defaultClassNames.disabled
+        ),
+        hidden: cn("invisible", defaultClassNames.hidden),
+        ...classNames,
+      }}
+      components={{
+        Root: ({ className, rootRef, ...props }) => {
           return (
-            <div 
-              key={index}
-              className={dayClass}
-              onClick={() => handleDateClick(day)}
-              title={!day.isAvailable ? (day.date.getDay() === 0 ? 'Closed on Sundays' : 'Not available') : 'Available for booking'}
-            >
-              <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors ${
-                day.isToday 
-                  ? 'bg-secondary text-white font-semibold' 
-                  : day.isAvailable 
-                    ? 'hover:bg-primary/10' 
-                    : ''
-              }`}>
-                {day.dayOfMonth}
-              </span>
-              {day.isAvailable ? (
-                <span className="text-xs mt-1 font-medium text-secondary">
-                  Available
-                </span>
-              ) : day.date.getDay() === 0 ? (
-                <span className="text-xs text-foreground/40">
-                  Closed
-                </span>
-              ) : day.isCurrentMonth ? (
-                <span className="text-xs text-foreground/40">
-                  Booked
-                </span>
-              ) : null}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+            <div
+              data-slot="calendar"
+              ref={rootRef}
+              className={cn(className)}
+              {...props}
+            />
+          )
+        },
+        Chevron: ({ className, orientation, ...props }) => {
+          if (orientation === "left") {
+            return (
+              <ChevronLeftIcon className={cn("size-4", className)} {...props} />
+            )
+          }
+
+          if (orientation === "right") {
+            return (
+              <ChevronRightIcon
+                className={cn("size-4", className)}
+                {...props}
+              />
+            )
+          }
+
+          return (
+            <ChevronDownIcon className={cn("size-4", className)} {...props} />
+          )
+        },
+        DayButton: CalendarDayButton,
+        WeekNumber: ({ children, ...props }) => {
+          return (
+            <td {...props}>
+              <div className="flex size-(--cell-size) items-center justify-center text-center">
+                {children}
+              </div>
+            </td>
+          )
+        },
+        ...components,
+      }}
+      {...props}
+    />
+  )
 }
+
+function CalendarDayButton({
+  className,
+  day,
+  modifiers,
+  ...props
+}: React.ComponentProps<typeof DayButton>) {
+  const defaultClassNames = getDefaultClassNames()
+
+  const ref = React.useRef<HTMLButtonElement>(null)
+  React.useEffect(() => {
+    if (modifiers.focused) ref.current?.focus()
+  }, [modifiers.focused])
+
+  return (
+    <Button
+      ref={ref}
+      variant="ghost"
+      size="icon"
+      data-day={day.date.toLocaleDateString()}
+      data-selected-single={
+        modifiers.selected &&
+        !modifiers.range_start &&
+        !modifiers.range_end &&
+        !modifiers.range_middle
+      }
+      data-range-start={modifiers.range_start}
+      data-range-end={modifiers.range_end}
+      data-range-middle={modifiers.range_middle}
+      className={cn(
+        "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 dark:hover:text-accent-foreground flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md [&>span]:text-xs [&>span]:opacity-70",
+        defaultClassNames.day,
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Calendar, CalendarDayButton }
