@@ -10,24 +10,27 @@ export interface CakeCategory {
   id: string;
   name: string;
   description: string;
+  image?: string;
+  alt?: string;
+}
+
+export interface Cake {
+  id: string;
+  name: string;
+  description: string;
   price: number;
   image?: string;
   alt?: string;
-  slug?: string;
+  category: string; // Reference to CakeCategory id
+  flavors: CakeFlavor[];
+  sizes: string[]; // References to Size ids
 }
 
 // Available cake flavors
 export const cakeFlavors = [
   'Vanilla',
   'Chocolate',
-  'Strawberry',
-  'Red Velvet',
-  'Lemon',
-  'Carrot',
-  'Funfetti',
-  'Marble',
-  'Coconut',
-  'Coffee'
+  'Strawberry'
 ] as const;
 
 export type CakeFlavor = typeof cakeFlavors[number];
@@ -45,36 +48,42 @@ export const cakeCategories: CakeCategory[] = [
     id: 'design',
     name: 'Design Cakes',
     description: 'Custom designed cakes for any occasion',
-    price: 45,
-    image: '/images/cakes/bead-cake.jpg',
-    alt: 'Elegant cake with delicate sugar bead decorations',
-    slug: 'design-cakes'
+    image: '/images/cakes/Design/Princess.jpeg',
+    alt: 'Elegant cake with delicate sugar bead decorations'
   },
   {
-    id: 'two-tiered',
-    name: 'Tall/Tiered Cakes',
-    description: 'Elegant tiered cakes perfect for celebrations',
-    price: 85,
-    image: '/images/cakes/big-bow-cake.jpg',
-    alt: 'Cake with large fondant bow decoration',
-    slug: 'tiered-cakes'
+    id: 'tiered',
+    name: 'Tiered Cakes',
+    description: 'Multi-tiered cakes for weddings and special events',
+    image: '/images/cakes/Tall&Tiered/ribbon.jpeg',
+    alt: 'Cake with large fondant bow decoration'
+  },
+  {
+    id: 'custom',
+    name: 'Custom Cakes',
+    description: 'Custom designed cakes for any occasion',
+    image: '/images/cakes/Design/pompompurin.jpeg',
+    alt: 'Elegant cake with delicate sugar bead decorations'
   },
   {
     id: 'catering',
     name: 'Catering',
     description: 'Large cakes suitable for events and parties (serves 50+)',
-    price: 120,
-    image: '/images/cakes/bow-cake.jpg',
-    alt: 'Cake with dainty fondant bows',
-    slug: 'catering'
+    image: '/images/cakes/Catering/strawberry&packaged.jpeg',
+    alt: 'Cake with dainty fondant bows'
   },
   {
-    id: 'gift',
-    name: 'Gift Sets',
+    id: 'party',
+    name: 'Party Favor',
     description: 'Small cakes with gift wrapping and personal messages',
-    price: 35,
     image: '/images/cakes/bday-bunny-cake.jpg',
-    alt: 'Bunny-themed birthday cake',
-    slug: 'gift-sets'
-  }
+    alt: 'Bunny-themed birthday cake'
+  },
+  {
+    id: 'candles',
+    name: 'Candles',
+    description: 'Candles for birthdays and special occasions',
+    image: '/images/cakes/bday-bunny-cake.jpg',
+    alt: 'Bunny-themed birthday cake'
+  },
 ];

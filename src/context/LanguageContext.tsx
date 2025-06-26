@@ -23,7 +23,6 @@ const translations: Translations = {
     home: 'Home',
     about: 'About Us',
     cakes: 'Our Cakes',
-    order: 'Order Online',
     contact: 'Contact',
     hero: {
       title: 'Handcrafted Cakes for Every Occasion',
@@ -38,7 +37,6 @@ const translations: Translations = {
     home: '홈',
     about: '회사소개',
     cakes: '케이크',
-    order: '주문하기',
     contact: '문의하기',
     hero: {
       title: '모든 특별한 순간을 위한 핸드메이드 케이크',

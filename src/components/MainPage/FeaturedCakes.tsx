@@ -13,7 +13,7 @@ export default function FeaturedCakes() {
       </div>
       <div className="container mx-auto px-4 relative z-10">
         <h2 className="text-4xl md:text-5xl font-bold text-center text-tertiary mb-12">Our Signature Cakes</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 bg-white/80 backdrop-blur-sm p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 bg-white/80 backdrop-blur-sm p-8 rounded-xl shadow-lg max-w-6xl mx-auto">
           {cakeCategories.map((category) => (
             <CakeCard
               key={category.id}
