@@ -87,3 +87,73 @@ export const cakeCategories: CakeCategory[] = [
     alt: 'Bunny-themed birthday cake'
   },
 ];
+
+// Design cakes for the collection/design page
+export const designCakes: Cake[] = [
+  {
+    id: 'bead-cake',
+    name: 'Bead Cake',
+    description: 'Elegant cake featuring delicate beadwork design',
+    price: 65.00,
+    image: '/images/cakes/design/bead-cake.jpg',
+    alt: 'Elegant cake with beadwork design',
+    category: 'design',
+    flavors: ['Vanilla', 'Chocolate'],
+    sizes: ['small', 'medium', 'large']
+  },
+  {
+    id: 'big-bow-cake',
+    name: 'Big Bow Cake',
+    description: 'Stunning cake with a large fondant bow decoration',
+    price: 75.00,
+    image: '/images/cakes/design/big-bow-cake.jpg',
+    alt: 'Cake with large fondant bow',
+    category: 'design',
+    flavors: ['Vanilla', 'Strawberry'],
+    sizes: ['medium', 'large']
+  },
+  {
+    id: 'bow-cake',
+    name: 'Bow Cake',
+    description: 'Charming cake adorned with dainty fondant bows',
+    price: 70.00,
+    image: '/images/cakes/design/bow-cake.jpg',
+    alt: 'Cake with dainty fondant bows',
+    category: 'design',
+    flavors: ['Chocolate', 'Vanilla'],
+    sizes: ['small', 'medium', 'large']
+  },
+  {
+    id: 'bunny-cake',
+    name: 'Bunny Cake',
+    description: 'Adorable bunny-themed cake perfect for birthdays',
+    price: 68.00,
+    image: '/images/cakes/design/bunny-cake.jpg',
+    alt: 'Bunny-themed birthday cake',
+    category: 'design',
+    flavors: ['Vanilla', 'Strawberry'],
+    sizes: ['small', 'medium']
+  },
+  {
+    id: 'simply-cake',
+    name: 'Simply Cake',
+    description: 'Minimalist design with clean lines and elegant simplicity',
+    price: 60.00,
+    image: '/images/cakes/design/simply-cake.jpg',
+    alt: 'Minimalist cake design',
+    category: 'design',
+    flavors: ['Vanilla', 'Chocolate'],
+    sizes: ['small', 'medium', 'large']
+  },
+  {
+    id: 'tiara-cake',
+    name: 'Tiara Cake',
+    description: 'Regal cake featuring an elegant tiara design',
+    price: 80.00,
+    image: '/images/cakes/design/tiara-cake.jpg',
+    alt: 'Cake with tiara decoration',
+    category: 'design',
+    flavors: ['Chocolate', 'Vanilla', 'Strawberry'],
+    sizes: ['medium', 'large']
+  }
+];

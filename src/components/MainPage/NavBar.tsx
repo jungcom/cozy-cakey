@@ -14,7 +14,7 @@ export default function NavBar() {
         <div className="hidden md:flex space-x-6 mr-24">
           <Link href="/" className="text-secondary hover:text-tertiary font-medium py-2 px-3 rounded-md hover:bg-primary/10 transition-colors">{t('home')}</Link>
           <Link href="/about" className="text-secondary hover:text-tertiary font-medium py-2 px-3 rounded-md hover:bg-primary/10 transition-colors">{t('about')}</Link>
-          <Link href="/menu" className="text-secondary hover:text-tertiary font-medium py-2 px-3 rounded-md hover:bg-primary/10 transition-colors">{t('cakes')}</Link>
+          <Link href="/collection" className="text-secondary hover:text-tertiary font-medium py-2 px-3 rounded-md hover:bg-primary/10 transition-colors">{t('cakes')}</Link>
           <Link href="/contact" className="text-secondary hover:text-tertiary font-medium py-2 px-3 rounded-md hover:bg-primary/10 transition-colors">{t('contact')}</Link>
         </div>
         {/* Language Switcher - top right, tighter and further in corner */}

@@ -3,7 +3,7 @@
 import CakeCard from '@/components/ui/CakeCard';
 import { cakeCategories } from '@/data/cakes';
 
-export default function MenuPage() {
+export default function CollectionPage() {
   return (
     <div className="min-h-screen bg-amber-50 py-16 px-4">
       <div className="max-w-7xl mx-auto">
@@ -25,7 +25,7 @@ export default function MenuPage() {
               description={cake.description}
               image={cake.image || '/images/cakes/default-cake.jpg'}
               alt={cake.alt || `${cake.name} cake`}
-              variant="menu"
+              variant="collection"
             />
           ))}
         </div>

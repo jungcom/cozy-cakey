@@ -12,7 +12,7 @@ type BaseCakeCardProps = {
 };
 
 type CakeCardProps = BaseCakeCardProps & {
-  variant?: 'default' | 'menu';
+  variant?: 'default' | 'collection' | 'order';
   price?: string;
 };
 
@@ -47,12 +47,12 @@ const DefaultCakeCard = ({ id, name, description, image, alt }: BaseCakeCardProp
   );
 };
 
-const MenuCakeCard = ({ id, name, description, image, alt, price }: BaseCakeCardProps & { price?: string }) => {
+const CollectionCakeCard = ({ id, name, description, image, alt, price }: BaseCakeCardProps & { price?: string }) => {
   const [imageError, setImageError] = useState(false);
 
   return (
     <a 
-      href={`/cakes/${id}`} 
+      href={`/collection/${id}`} 
       className="group block h-full rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 bg-white border border-gray-100 hover:border-amber-200"
     >
       {/* Image container */}
@@ -76,9 +76,41 @@ const MenuCakeCard = ({ id, name, description, image, alt, price }: BaseCakeCard
   );
 };
 
+const OrderCakeCard = ({ id, name, image, alt, price }: BaseCakeCardProps & { price?: string }) => {
+  const [imageError, setImageError] = useState(false);
+
+  return (
+    <div className="group block h-full rounded-xl overflow-hidden bg-white border border-gray-100 hover:shadow-md transition-all duration-300">
+      {/* Image container */}
+      <div className="relative aspect-square w-full overflow-hidden">
+        <Image
+          src={imageError ? '/images/placeholder-cake.svg' : image}
+          alt={alt}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          onError={() => setImageError(true)}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority
+        />
+      </div>
+      
+      {/* Content */}
+      <div className="p-4">
+        <h3 className="text-lg font-medium text-gray-900 text-center">{name}</h3>
+        {price && (
+          <p className="text-amber-700 text-center mt-1 font-medium">{price}</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const CakeCard = ({ variant = 'default', ...props }: CakeCardProps) => {
-  if (variant === 'menu') {
-    return <MenuCakeCard {...props} />;
+  if (variant === 'collection') {
+    return <CollectionCakeCard {...props} />;
+  }
+  if (variant === 'order') {
+    return <OrderCakeCard {...props} />;
   }
   return <DefaultCakeCard {...props} />;
 };
