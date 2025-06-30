@@ -5,7 +5,7 @@ interface PageHeaderProps {
   className?: string;
 }
 
-export default function PageHeader({ 
+export function PageHeader({ 
   title, 
   subtitle, 
   description, 

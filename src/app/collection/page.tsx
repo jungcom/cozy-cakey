@@ -1,8 +1,8 @@
 'use client';
 
 import CakeCard from '@/components/ui/CakeCard';
-import PageContainer from '@/components/ui/PageContainer';
-import PageHeader from '@/components/ui/PageHeader';
+import { PageContainer } from '@/components/ui/page/PageContainer';
+import { PageHeader } from '@/components/ui/page/PageHeader';
 import { cakeCategories } from '@/data/cakes';
 
 export default function CollectionPage() {

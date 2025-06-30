@@ -6,7 +6,7 @@ interface PageContainerProps {
   variant?: 'default' | 'full' | 'compact';
 }
 
-export default function PageContainer({ 
+export function PageContainer({ 
   children, 
   className = '', 
   variant = 'default' 
