@@ -1,16 +1,15 @@
 'use client';
 
 import { notFound } from 'next/navigation';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { designCakes } from '@/data/cakes';
-import type { Cake } from '@/types/cake';
+import { designCakes, type Cake } from '@/data/cakes';
 
 type CakeSize = '6' | '8' | '10' | '12';
 
@@ -33,15 +32,10 @@ interface OrderFormData {
 
 export default function OrderPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // In a real app, we would get the cakeId from the URL or state
-  // For now, we'll use the first cake as a placeholder
-  const cake = designCakes[0];
-
-  if (!cake) {
-    notFound();
-  }
+  const [cake, setCake] = useState<Cake | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const sizes: SizeOption[] = [
     { id: '6', label: '6" (Serves 8-10)', price: 35 },
@@ -64,6 +58,31 @@ export default function OrderPage() {
     email: '',
     phone: '',
   });
+  
+  useEffect(() => {
+    const cakeId = searchParams.get('cakeId');
+    if (cakeId) {
+      const selectedCake = designCakes.find(c => c.id === cakeId);
+      setCake(selectedCake || null);
+    } else {
+      setCake(designCakes[0]);
+    }
+    setIsLoading(false);
+  }, [searchParams]);
+
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto py-12 px-4">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!cake) {
+    notFound();
+  }
 
   const selectedSize = sizes.find(size => size.id === formData.size) || sizes[1];
   const totalPrice = selectedSize.price;
@@ -269,7 +288,7 @@ export default function OrderPage() {
               {isSubmitting ? 'Processing...' : 'Place Order'}
             </Button>
             <p className="text-sm text-gray-500 mt-2 text-center">
-              You won't be charged until we confirm your order details.
+              You won&apos;t be charged until we confirm your order details.
             </p>
           </div>
         </div>

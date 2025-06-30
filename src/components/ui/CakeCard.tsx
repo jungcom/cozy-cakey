@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { Button } from './button';
-import { ArrowRight } from 'lucide-react';
 
 type BaseCakeCardProps = {
   id: string;
@@ -47,7 +46,7 @@ const DefaultCakeCard = ({ id, name, description, image, alt }: BaseCakeCardProp
   );
 };
 
-const CollectionCakeCard = ({ id, name, description, image, alt, price }: BaseCakeCardProps & { price?: string }) => {
+const CollectionCakeCard = ({ id, name, image, alt }: BaseCakeCardProps & { price?: string }) => {
   const [imageError, setImageError] = useState(false);
 
   return (
@@ -81,7 +80,7 @@ const OrderCakeCard = ({ id, name, image, alt, price }: BaseCakeCardProps & { pr
 
   return (
     <a 
-      href={`/collection/design/order`}
+      href={`/collection/design/order?cakeId=${id}`}
       className="group block h-full rounded-xl overflow-hidden bg-white border border-gray-100 hover:shadow-md transition-all duration-300 hover:border-amber-200"
       aria-label={`View details for ${name}`}
     >
