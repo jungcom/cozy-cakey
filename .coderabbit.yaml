@@ -1,0 +1,28 @@
+reviews:
+  # Enable commit-based reviews
+  review_commits: true
+  auto_review: true
+  
+  # Configure which commits to review
+  commit_patterns:
+    - "main"
+    - "develop"
+    - "feature/*"
+  
+  # Exclude merge commits if desired
+  exclude_merge_commits: false
+  
+  # Review settings
+  review_level: "detailed"
+  enable_auto_reply: true
+
+# Optional: Configure specific paths
+paths:
+  include:
+    - "src/**"
+  exclude:
+    - "*.md"
+    - "package-lock.json"
+    - "yarn.lock"
+    - "public/**"
+    - "*.config.js"
