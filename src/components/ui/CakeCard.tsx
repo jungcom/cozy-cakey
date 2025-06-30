@@ -80,7 +80,11 @@ const OrderCakeCard = ({ id, name, image, alt, price }: BaseCakeCardProps & { pr
   const [imageError, setImageError] = useState(false);
 
   return (
-    <div className="group block h-full rounded-xl overflow-hidden bg-white border border-gray-100 hover:shadow-md transition-all duration-300">
+    <a 
+      href={`/collection/design/order`}
+      className="group block h-full rounded-xl overflow-hidden bg-white border border-gray-100 hover:shadow-md transition-all duration-300 hover:border-amber-200"
+      aria-label={`View details for ${name}`}
+    >
       {/* Image container */}
       <div className="relative aspect-square w-full overflow-hidden">
         <Image
@@ -96,12 +100,16 @@ const OrderCakeCard = ({ id, name, image, alt, price }: BaseCakeCardProps & { pr
       
       {/* Content */}
       <div className="p-4">
-        <h3 className="text-lg font-medium text-gray-900 text-center">{name}</h3>
+        <h3 className="text-lg font-medium text-gray-900 text-center group-hover:text-amber-700 transition-colors">
+          {name}
+        </h3>
         {price && (
-          <p className="text-amber-700 text-center mt-1 font-medium">{price}</p>
+          <p className="text-amber-600 font-medium text-center mt-2 group-hover:text-amber-700 transition-colors">
+            {price}
+          </p>
         )}
       </div>
-    </div>
+    </a>
   );
 };
 
