@@ -1,32 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
 import Header from '@/components/CollectionPage/CollectionListPage/Header';
 import CakeList from '@/components/CollectionPage/CollectionListPage/CakeList';
 import Footer from '@/components/CollectionPage/CollectionListPage/Footer';
 import { designCakes } from '@/data/cakes';
-
-type SortOption = 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc';
+import { useSorting } from '@/hooks/useSorting';
 
 export default function DesignCakesPage() {
-  const [sortBy, setSortBy] = useState<SortOption>('name-asc');
-
-  const sortedCakes = useMemo(() => {
-    return [...designCakes].sort((a, b) => {
-      switch (sortBy) {
-        case 'price-asc':
-          return a.price - b.price;
-        case 'price-desc':
-          return b.price - a.price;
-        case 'name-asc':
-          return a.name.localeCompare(b.name);
-        case 'name-desc':
-          return b.name.localeCompare(a.name);
-        default:
-          return 0;
-      }
-    });
-  }, [sortBy]);
+  const { sortedItems: sortedCakes, sortBy, setSortBy } = useSorting(designCakes);
 
   return (
     <Header

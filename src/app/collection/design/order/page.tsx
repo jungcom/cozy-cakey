@@ -9,26 +9,17 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { designCakes, type Cake } from '@/data/cakes';
-
-type CakeSize = '6' | '8' | '10' | '12';
-
-interface SizeOption {
-  id: CakeSize;
-  label: string;
-  price: number;
-}
-
-interface OrderFormData {
-  cakeId: string;
-  size: CakeSize;
-  flavor: string;
-  message: string;
-  deliveryDate: string;
-  name: string;
-  email: string;
-  phone: string;
-}
+import { 
+  DEFAULT_SIZES, 
+  DEFAULT_FLAVORS, 
+  getDefaultFormData, 
+  calculateTotalPrice,
+  getTodaysDate,
+  type CakeSize,
+  type OrderFormData 
+} from '@/utils/orderFormUtils';
 
 export default function OrderPage() {
   const router = useRouter();
@@ -37,27 +28,7 @@ export default function OrderPage() {
   const [cake, setCake] = useState<Cake | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const sizes: SizeOption[] = [
-    { id: '6', label: '6" (Serves 8-10)', price: 35 },
-    { id: '8', label: '8" (Serves 12-16)', price: 45 },
-    { id: '10', label: '10" (Serves 20-25)', price: 55 },
-    { id: '12', label: '12" (Serves 30-35)', price: 65 },
-  ] as const;
-
-  const flavors = [
-    'Vanilla',
-    'Chocolate'
-  ] as const;
-
-  const [formData, setFormData] = useState<Omit<OrderFormData, 'cakeId'>>({
-    size: '8',
-    flavor: flavors[0],
-    message: '',
-    deliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    name: '',
-    email: '',
-    phone: '',
-  });
+  const [formData, setFormData] = useState<Omit<OrderFormData, 'cakeId'>>(getDefaultFormData());
   
   useEffect(() => {
     const cakeId = searchParams.get('cakeId');
@@ -71,21 +42,14 @@ export default function OrderPage() {
   }, [searchParams]);
 
   if (isLoading) {
-    return (
-      <div className="max-w-4xl mx-auto py-12 px-4">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-lg">Loading...</div>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (!cake) {
     notFound();
   }
 
-  const selectedSize = sizes.find(size => size.id === formData.size) || sizes[1];
-  const totalPrice = selectedSize.price;
+  const totalPrice = calculateTotalPrice(formData.size);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,7 +117,7 @@ export default function OrderPage() {
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">{cake.name}</h2>
             <p className="text-amber-700 text-lg font-medium">
-              ${sizes[0].price} - ${sizes[sizes.length - 1].price}
+              ${DEFAULT_SIZES[0].price} - ${DEFAULT_SIZES[DEFAULT_SIZES.length - 1].price}
             </p>
             <p className="text-gray-600">{cake.description}</p>
           </div>
@@ -168,7 +132,7 @@ export default function OrderPage() {
               onValueChange={handleSizeChange}
               className="grid grid-cols-2 gap-4"
             >
-              {sizes.map((size) => (
+              {DEFAULT_SIZES.map((size) => (
                 <div key={size.id} className="flex items-center space-x-2">
                   <RadioGroupItem 
                     value={size.id} 
@@ -190,7 +154,7 @@ export default function OrderPage() {
               onValueChange={(value) => setFormData(prev => ({ ...prev, flavor: value }))}
               className="space-y-2"
             >
-              {flavors.map((flavor) => (
+              {DEFAULT_FLAVORS.map((flavor) => (
                 <div key={flavor} className="flex items-center space-x-2">
                   <RadioGroupItem 
                     value={flavor} 
@@ -227,7 +191,7 @@ export default function OrderPage() {
               name="deliveryDate"
               value={formData.deliveryDate}
               onChange={handleInputChange}
-              min={new Date().toISOString().split('T')[0]}
+              min={getTodaysDate()}
               className="w-full"
               required
             />
