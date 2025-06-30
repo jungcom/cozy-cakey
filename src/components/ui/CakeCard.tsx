@@ -39,7 +39,7 @@ const DefaultCakeCard = ({ id, name, description, image, alt }: BaseCakeCardProp
           variant="default"
           className="w-full mt-auto"
         >
-          View Details
+          View Details123123
         </Button>
       </div>
     </div>
