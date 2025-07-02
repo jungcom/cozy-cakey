@@ -1,0 +1,1 @@
+Help me set up supabase for the app and test it out. Currently created a supabase account and have the environment variables set up in .env.local. we need to be able to order without logging in. our app will not have any authentication. 
