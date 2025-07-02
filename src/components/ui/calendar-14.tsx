@@ -6,7 +6,7 @@ import { Calendar } from "@/components/ui/calendar"
 
 export default function Calendar14() {
   const [date, setDate] = React.useState<Date | undefined>(
-    new Date(2025, 5, 12)
+    new Date()
   )
   // Function to check if a date is Sunday
   const isSunday = (date: Date) => date.getDay() === 0

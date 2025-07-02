@@ -52,24 +52,27 @@ const CollectionCakeCard = ({ id, name, image, alt }: BaseCakeCardProps & { pric
   return (
     <a 
       href={`/collection/${id}`} 
-      className="group block h-full rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 bg-white border border-gray-100 hover:border-amber-200"
+      className="group block h-full rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-background to-background1 border-2 border-primary/30 hover:border-secondary/50 transform hover:-translate-y-2"
     >
       {/* Image container */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden">
+      <div className="relative aspect-[6/5] w-full overflow-hidden">
         <Image
           src={imageError ? '/images/placeholder-cake.svg' : image}
           alt={alt}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-105"
           onError={() => setImageError(true)}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
       
       {/* Content */}
-      <div className="p-6">
-        <h3 className="text-2xl font-medium text-gray-900 text-left">{name}</h3>
+      <div className="p-4 bg-gradient-to-br from-background1/90 to-background2/70 backdrop-blur-sm flex items-center h-16">
+        <h3 className="text-2xl font-bold text-tertiary group-hover:text-secondary transition-colors duration-300 leading-tight">
+          {name}
+        </h3>
       </div>
     </a>
   );
