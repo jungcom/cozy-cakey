@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { DEFAULT_SIZES } from '@/utils/orderFormUtils';
 
 interface CakeImageDescriptionProps {
   cake: {

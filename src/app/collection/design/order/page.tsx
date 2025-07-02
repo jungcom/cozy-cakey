@@ -12,15 +12,16 @@ import CakeImageDescription from '@/components/CollectionPage/CollectionOrderPag
 import TotalOrder from '@/components/CollectionPage/CollectionOrderPage/TotalOrder';
 import { designCakes, type Cake } from '@/data/cakes';
 import { 
-  DEFAULT_SIZES, 
-  DEFAULT_FLAVORS, 
-  BASE_COLORS,
-  CANDY_CROWN_COLORS,
   PICKUP_TIMES,
   getDefaultFormData, 
-  calculateTotalPrice,
+  calculateCakeTotalPrice,
   getTodaysDate,
-  type CakeSize,
+  getSizeOptionsFromCake,
+  getFlavorOptionsFromCake,
+  getBaseColorOptionsFromCake,
+  getCandyCrownColorOptionsFromCake,
+  getLetteringColorOptionsFromCake,
+  getBowColorOptionsFromCake,
   type OrderFormData 
 } from '@/utils/orderFormUtils';
 
@@ -44,6 +45,28 @@ export default function OrderPage() {
     setIsLoading(false);
   }, [searchParams]);
 
+  // Initialize form data with cake-specific defaults when cake changes
+  useEffect(() => {
+    if (cake) {
+      const sizeOptions = getSizeOptionsFromCake(cake);
+      const flavorOptions = getFlavorOptionsFromCake(cake);
+      const baseColorOptions = getBaseColorOptionsFromCake(cake);
+      const candyCrownOptions = getCandyCrownColorOptionsFromCake(cake);
+      const letteringColorOptions = getLetteringColorOptionsFromCake(cake);
+      const bowColorOptions = getBowColorOptionsFromCake(cake);
+
+      setFormData(prev => ({
+        ...prev,
+        size: sizeOptions[0]?.id || '6',
+        flavor: flavorOptions[0]?.id || 'Vanilla',
+        baseColor: baseColorOptions[0]?.id || 'White',
+        candyCrownColor: candyCrownOptions?.[0]?.id,
+        letteringColor: letteringColorOptions?.[0]?.id,
+        bowColor: bowColorOptions?.[0]?.id,
+      }));
+    }
+  }, [cake]);
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -52,17 +75,9 @@ export default function OrderPage() {
     notFound();
   }
 
-  const totalPrice = calculateTotalPrice(
-    formData.size, 
-    formData.baseColor, 
-    formData.candyCrownColor, 
-    formData.lettering
-  );
+  const totalPrice = calculateCakeTotalPrice(cake, formData);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validation for required fields
+  const validateFormData = (formData: Partial<OrderFormData>, totalPrice: number): string | null => {
     const requiredFields = [
       { field: 'size', message: 'Please select a cake size' },
       { field: 'flavor', message: 'Please select a flavor' },
@@ -72,35 +87,52 @@ export default function OrderPage() {
       { field: 'customerType', message: 'Please select customer type' },
       { field: 'pickupTime', message: 'Please select a pickup/delivery time' },
       { field: 'baseColor', message: 'Please select a base color' },
-      { field: 'candyCrownColor', message: 'Please select a candy crown color' },
       { field: 'deliveryOption', message: 'Please select pickup or delivery' },
       { field: 'paymentMethod', message: 'Please select a payment method' },
     ];
     
+    // Add cake-specific required fields
+    if (cake.candyCrownColorPricing) {
+      requiredFields.push({ field: 'candyCrownColor', message: 'Please select a candy crown color' });
+    }
+    if (cake.letteringColorPricing) {
+      requiredFields.push({ field: 'letteringColor', message: 'Please select a lettering color' });
+    }
+    if (cake.bowColorPricing) {
+      requiredFields.push({ field: 'bowColor', message: 'Please select a bow color' });
+    }
+    
     for (const { field, message } of requiredFields) {
       if (!formData[field as keyof typeof formData]) {
-        alert(message);
-        return;
+        return message;
       }
     }
     
     if (!formData.allergyAgreement) {
-      alert('You must agree to the allergy disclaimer to place an order');
-      return;
+      return 'You must agree to the allergy disclaimer to place an order';
     }
     
     if (formData.deliveryOption === 'delivery' && totalPrice < 50) {
-      alert('Delivery is only available for orders over $50');
-      return;
+      return 'Delivery is only available for orders over $50';
     }
     
     if (formData.deliveryOption === 'delivery' && !formData.address.trim()) {
-      alert('Please provide a delivery address');
-      return;
+      return 'Please provide a delivery address';
     }
     
     if (formData.lettering.length > 20) {
-      alert('Lettering cannot exceed 20 characters');
+      return 'Lettering cannot exceed 20 characters';
+    }
+    
+    return null;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const validationError = validateFormData(formData, totalPrice);
+    if (validationError) {
+      alert(validationError);
       return;
     }
     
@@ -138,7 +170,7 @@ export default function OrderPage() {
   const handleSizeChange = (value: string) => {
     setFormData(prev => ({
       ...prev,
-      size: value as CakeSize
+      size: value
     }));
   };
 
@@ -161,7 +193,7 @@ export default function OrderPage() {
               className="grid grid-cols-2 gap-4"
               required
             >
-              {DEFAULT_SIZES.map((size) => (
+              {getSizeOptionsFromCake(cake).map((size) => (
                 <div key={size.id} className="flex items-center space-x-2">
                   <RadioGroupItem 
                     value={size.id} 
@@ -185,17 +217,17 @@ export default function OrderPage() {
               className="space-y-2"
               required
             >
-              {DEFAULT_FLAVORS.map((flavor) => (
-                <div key={flavor} className="flex items-center space-x-2">
+              {getFlavorOptionsFromCake(cake).map((flavor) => (
+                <div key={flavor.id} className="flex items-center space-x-2">
                   <RadioGroupItem 
-                    value={flavor} 
-                    id={`flavor-${flavor.toLowerCase().replace(/\s+/g, '-')}`}
+                    value={flavor.id} 
+                    id={`flavor-${flavor.id.toLowerCase().replace(/\s+/g, '-')}`}
                   />
                   <Label 
-                    htmlFor={`flavor-${flavor.toLowerCase().replace(/\s+/g, '-')}`} 
+                    htmlFor={`flavor-${flavor.id.toLowerCase().replace(/\s+/g, '-')}`} 
                     className="cursor-pointer font-normal"
                   >
-                    {flavor}
+                    {flavor.label}
                   </Label>
                 </div>
               ))}
@@ -211,14 +243,14 @@ export default function OrderPage() {
               className="space-y-2"
               required
             >
-              {BASE_COLORS.map((color) => (
-                <div key={color.value} className="flex items-center space-x-2">
+              {getBaseColorOptionsFromCake(cake).map((color) => (
+                <div key={color.id} className="flex items-center space-x-2">
                   <RadioGroupItem 
-                    value={color.value} 
-                    id={`base-color-${color.value}`}
+                    value={color.id} 
+                    id={`base-color-${color.id}`}
                   />
                   <Label 
-                    htmlFor={`base-color-${color.value}`} 
+                    htmlFor={`base-color-${color.id}`} 
                     className="cursor-pointer font-normal"
                   >
                     {color.label}
@@ -226,7 +258,7 @@ export default function OrderPage() {
                 </div>
               ))}
             </RadioGroup>
-            {formData.baseColor === 'custom' && (
+            {formData.baseColor === 'Other' && (
               <div className="mt-2">
                 <Input
                   placeholder="Describe your custom color"
@@ -238,46 +270,124 @@ export default function OrderPage() {
             )}
           </div>
 
-          {/* Candy Crown Color - Required */}
-          <div className="space-y-2">
-            <h3 className="font-medium">Candy Crown Color <span className="text-red-500">*</span></h3>
-            <RadioGroup 
-              value={formData.candyCrownColor}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, candyCrownColor: value }))}
-              className="space-y-2"
-              required
-            >
-              {CANDY_CROWN_COLORS.map((color) => (
-                <div key={color.value} className="flex items-center space-x-2">
-                  <RadioGroupItem 
-                    value={color.value} 
-                    id={`crown-color-${color.value}`}
+          {/* Candy Crown Color - Bead Cake Only */}
+          {getCandyCrownColorOptionsFromCake(cake) && (
+            <div className="space-y-2">
+              <h3 className="font-medium">Candy Crown Color <span className="text-red-500">*</span></h3>
+              <RadioGroup 
+                value={formData.candyCrownColor}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, candyCrownColor: value }))}
+                className="space-y-2"
+                required
+              >
+                {getCandyCrownColorOptionsFromCake(cake)!.map((color) => (
+                  <div key={color.id} className="flex items-center space-x-2">
+                    <RadioGroupItem 
+                      value={color.id} 
+                      id={`crown-color-${color.id}`}
+                    />
+                    <Label 
+                      htmlFor={`crown-color-${color.id}`} 
+                      className="cursor-pointer font-normal"
+                    >
+                      {color.label}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+              {formData.candyCrownColor === 'Other' && (
+                <div className="mt-2">
+                  <Input
+                    placeholder="Describe your custom crown color"
+                    value={formData.customCandyCrownColor}
+                    onChange={(e) => setFormData(prev => ({ ...prev, customCandyCrownColor: e.target.value }))}
+                    className="w-full"
                   />
-                  <Label 
-                    htmlFor={`crown-color-${color.value}`} 
-                    className="cursor-pointer font-normal"
-                  >
-                    {color.label}
-                  </Label>
                 </div>
-              ))}
-            </RadioGroup>
-            {formData.candyCrownColor === 'custom' && (
-              <div className="mt-2">
-                <Input
-                  placeholder="Describe your custom crown color"
-                  value={formData.customCandyCrownColor}
-                  onChange={(e) => setFormData(prev => ({ ...prev, customCandyCrownColor: e.target.value }))}
-                  className="w-full"
-                />
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
+
+          {/* Lettering Color - For cakes with lettering options */}
+          {getLetteringColorOptionsFromCake(cake) && (
+            <div className="space-y-2">
+              <h3 className="font-medium">Lettering Color <span className="text-red-500">*</span></h3>
+              <RadioGroup 
+                value={formData.letteringColor}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, letteringColor: value }))}
+                className="space-y-2"
+                required
+              >
+                {getLetteringColorOptionsFromCake(cake)!.map((color) => (
+                  <div key={color.id} className="flex items-center space-x-2">
+                    <RadioGroupItem 
+                      value={color.id} 
+                      id={`lettering-color-${color.id}`}
+                    />
+                    <Label 
+                      htmlFor={`lettering-color-${color.id}`} 
+                      className="cursor-pointer font-normal"
+                    >
+                      {color.label}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+              {formData.letteringColor === 'Other' && (
+                <div className="mt-2">
+                  <Input
+                    placeholder="Describe your custom lettering color"
+                    value={formData.customLetteringColor}
+                    onChange={(e) => setFormData(prev => ({ ...prev, customLetteringColor: e.target.value }))}
+                    className="w-full"
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Bow Color - For cakes with bow options */}
+          {getBowColorOptionsFromCake(cake) && (
+            <div className="space-y-2">
+              <h3 className="font-medium">Bow Color <span className="text-red-500">*</span></h3>
+              <RadioGroup 
+                value={formData.bowColor}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, bowColor: value }))}
+                className="space-y-2"
+                required
+              >
+                {getBowColorOptionsFromCake(cake)!.map((color) => (
+                  <div key={color.id} className="flex items-center space-x-2">
+                    <RadioGroupItem 
+                      value={color.id} 
+                      id={`bow-color-${color.id}`}
+                    />
+                    <Label 
+                      htmlFor={`bow-color-${color.id}`} 
+                      className="cursor-pointer font-normal"
+                    >
+                      {color.label}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+              {formData.bowColor === 'Other' && (
+                <div className="mt-2">
+                  <Input
+                    placeholder="Describe your custom bow color"
+                    value={formData.customBowColor}
+                    onChange={(e) => setFormData(prev => ({ ...prev, customBowColor: e.target.value }))}
+                    className="w-full"
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Add Lettering */}
           <div className="space-y-2">
             <h3 className="font-medium">
-              Add Lettering <span className="text-sm font-normal text-gray-600">(+$5, max 20 characters)</span>
+              Add Lettering <span className="text-sm font-normal text-gray-600">(optional, max 20 characters)</span>
             </h3>
             <Input
               placeholder="Enter text for your cake (optional)"
@@ -291,7 +401,7 @@ export default function OrderPage() {
               maxLength={20}
             />
             <div className="text-sm text-gray-500">
-              {formData.lettering.length}/20 characters
+              {formData.lettering?.length || 0}/20 characters
             </div>
           </div>
         </div>
@@ -539,10 +649,8 @@ export default function OrderPage() {
 
         {/* Form Total - Spans both columns */}
         <TotalOrder
-          size={formData.size}
-          baseColor={formData.baseColor}
-          candyCrownColor={formData.candyCrownColor}
-          lettering={formData.lettering}
+          cake={cake}
+          formData={formData}
           totalPrice={totalPrice}
           isSubmitting={isSubmitting}
         />
