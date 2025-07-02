@@ -11,6 +11,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CakeImageDescription from '@/components/CollectionPage/CollectionOrderPage/CakeImageDescription';
 import TotalOrder from '@/components/CollectionPage/CollectionOrderPage/TotalOrder';
 import { designCakes, type Cake } from '@/data/cakes';
+import { submitOrder, type Order } from '@/lib/supabase';
 import { 
   PICKUP_TIMES,
   getDefaultFormData, 
@@ -116,11 +117,11 @@ export default function OrderPage() {
       return 'Delivery is only available for orders over $50';
     }
     
-    if (formData.deliveryOption === 'delivery' && !formData.address.trim()) {
+    if (formData.deliveryOption === 'delivery' && !formData.address?.trim()) {
       return 'Please provide a delivery address';
     }
     
-    if (formData.lettering.length > 20) {
+    if ((formData.lettering?.length || 0) > 20) {
       return 'Lettering cannot exceed 20 characters';
     }
     
@@ -139,21 +140,48 @@ export default function OrderPage() {
     setIsSubmitting(true);
     
     try {
-      // In a real app, you would submit the form data to your API
-      console.log('Submitting order:', {
-        cakeId: cake.id,
-        ...formData,
-        totalPrice,
-      });
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Prepare order data for Supabase
+      const orderData: Order = {
+        cake_id: cake.id,
+        cake_name: cake.name,
+        size: formData.size,
+        flavor: formData.flavor,
+        base_color: formData.baseColor,
+        custom_base_color: formData.customBaseColor,
+        lettering: formData.lettering,
+        lettering_color: formData.letteringColor,
+        custom_lettering_color: formData.customLetteringColor,
+        candy_crown_color: formData.candyCrownColor,
+        custom_candy_crown_color: formData.customCandyCrownColor,
+        bow_color: formData.bowColor,
+        custom_bow_color: formData.customBowColor,
+        delivery_date: formData.deliveryDate,
+        pickup_time: formData.pickupTime,
+        customer_name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        kakaotalk_name: formData.kakaotalkName,
+        instagram_name: formData.instagramName,
+        customer_type: formData.customerType,
+        delivery_option: formData.deliveryOption,
+        address: formData.address,
+        payment_method: formData.paymentMethod,
+        allergy_agreement: formData.allergyAgreement,
+        questions_comments: formData.questionsComments,
+        discount_code: formData.discountCode,
+        total_price: totalPrice,
+        order_data: { ...formData, cakeId: cake.id, totalPrice }
+      };
+
+      // Submit order to Supabase
+      const result = await submitOrder(orderData);
+      console.log('Order submitted successfully:', result);
       
       // Redirect to thank you page or show success message
       router.push('/order/confirmation');
     } catch (error) {
       console.error('Error submitting order:', error);
-      // Handle error (show toast, etc.)
+      alert('Failed to submit order. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
