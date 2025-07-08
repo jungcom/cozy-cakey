@@ -10,13 +10,13 @@ import { Label } from '@/components/ui/label';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CakeImageDescription from '@/components/CollectionPage/CollectionOrderPage/CakeImageDescription';
 import TotalOrder from '@/components/CollectionPage/CollectionOrderPage/TotalOrder';
+import AvailabilityDatePicker from '@/components/ui/AvailabilityDatePicker';
 import { designCakes, type Cake } from '@/data/cakes';
 import { submitOrder, type Order } from '@/lib/supabase';
 import { 
   PICKUP_TIMES,
   getDefaultFormData, 
   calculateCakeTotalPrice,
-  getTodaysDate,
   getSizeOptionsFromCake,
   getFlavorOptionsFromCake,
   getBaseColorOptionsFromCake,
@@ -78,7 +78,7 @@ export default function OrderPage() {
 
   const totalPrice = calculateCakeTotalPrice(cake, formData);
 
-  const validateFormData = (formData: Partial<OrderFormData>, totalPrice: number): string | null => {
+  const validateFormData = async (formData: Partial<OrderFormData>, totalPrice: number): Promise<string | null> => {
     const requiredFields = [
       { field: 'size', message: 'Please select a cake size' },
       { field: 'flavor', message: 'Please select a flavor' },
@@ -125,13 +125,28 @@ export default function OrderPage() {
       return 'Lettering cannot exceed 20 characters';
     }
     
+    // Validate availability for the selected date
+    if (formData.deliveryDate) {
+      try {
+        const response = await fetch(`/api/availability?date=${formData.deliveryDate}`);
+        const data = await response.json();
+        
+        if (!data.available) {
+          return `The selected date is not available: ${data.reason}`;
+        }
+      } catch (error) {
+        console.error('Error checking availability:', error);
+        return 'Unable to verify date availability. Please try again.';
+      }
+    }
+    
     return null;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const validationError = validateFormData(formData, totalPrice);
+    const validationError = await validateFormData(formData, totalPrice);
     if (validationError) {
       alert(validationError);
       return;
@@ -565,21 +580,13 @@ export default function OrderPage() {
           </div>
 
           {/* Date - Required (after delivery options) */}
-          <div className="space-y-2">
-            <Label htmlFor="deliveryDate">
-              {formData.deliveryOption === 'delivery' ? 'Delivery' : 'Pickup'} Date <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              type="date"
-              id="deliveryDate"
-              name="deliveryDate"
-              value={formData.deliveryDate}
-              onChange={handleInputChange}
-              min={getTodaysDate()}
-              className="w-full"
-              required
-            />
-          </div>
+          <AvailabilityDatePicker
+            value={formData.deliveryDate}
+            onChange={(date) => setFormData(prev => ({ ...prev, deliveryDate: date }))}
+            label={formData.deliveryOption === 'delivery' ? 'delivery' : 'pickup'}
+            required
+            className="w-full"
+          />
 
           {/* Time - Required (after delivery options) */}
           <div className="space-y-2">

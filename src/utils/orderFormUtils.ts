@@ -96,7 +96,7 @@ export function getDefaultFormData(): Omit<OrderFormData, 'cakeId'> {
   return {
     size: '6',
     flavor: 'Vanilla',
-    deliveryDate: getDefaultDeliveryDate(),
+    deliveryDate: '',
     name: '',
     email: '',
     phone: '',

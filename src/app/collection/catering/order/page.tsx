@@ -8,12 +8,12 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CakeImageDescription from '@/components/CollectionPage/CollectionOrderPage/CakeImageDescription';
+import AvailabilityDatePicker from '@/components/ui/AvailabilityDatePicker';
 import { designCakes, type Cake } from '@/data/cakes';
 import { submitOrder, type Order } from '@/lib/supabase';
 import { 
   PICKUP_TIMES,
   getDefaultFormData, 
-  getTodaysDate,
   type OrderFormData 
 } from '@/utils/orderFormUtils';
 
@@ -52,7 +52,10 @@ export default function CateringOrderPage() {
         customerName: '',
         email: '',
         phone: '',
-        pickupDate: getTodaysDate(),
+        customerType: 'new',
+        kakaotalkName: '',
+        instagramName: '',
+        pickupDate: '',
         pickupTime: '',
         deliveryOption: 'pickup',
         deliveryAddress: '',
@@ -81,14 +84,16 @@ export default function CateringOrderPage() {
     return basePrice + flavorPrice + topperPrice;
   };
 
-  const validateFormData = (formData: Omit<OrderFormData, 'cakeId'>, totalPrice: number): string | null => {
+  const validateFormData = async (formData: Omit<OrderFormData, 'cakeId'>, totalPrice: number): Promise<string | null> => {
     const requiredFields = [
       { field: 'size', message: 'Please select a quantity' },
       { field: 'flavor', message: 'Please select a flavor' },
+      { field: 'topperOption', message: 'Please select a topper option' },
       { field: 'pickupDate', message: 'Please select a pickup date' },
       { field: 'customerName', message: 'Please enter your full name' },
       { field: 'email', message: 'Please enter your email address' },
       { field: 'phone', message: 'Please enter your phone number' },
+      { field: 'customerType', message: 'Please select customer type' },
       { field: 'pickupTime', message: 'Please select a pickup time' },
       { field: 'deliveryOption', message: 'Please select pickup or delivery' },
       { field: 'paymentMethod', message: 'Please select a payment method' },
@@ -124,6 +129,21 @@ export default function CateringOrderPage() {
       return 'Custom topper text cannot exceed 12 characters';
     }
     
+    // Validate availability for the selected date
+    if (formData.pickupDate) {
+      try {
+        const response = await fetch(`/api/availability?date=${formData.pickupDate}`);
+        const data = await response.json();
+        
+        if (!data.available) {
+          return `The selected date is not available: ${data.reason}`;
+        }
+      } catch (error) {
+        console.error('Error checking availability:', error);
+        return 'Unable to verify date availability. Please try again.';
+      }
+    }
+    
     return null;
   };
 
@@ -132,7 +152,7 @@ export default function CateringOrderPage() {
     if (!cake) return;
     
     const totalPrice = calculateTotal();
-    const validationError = validateFormData(formData, totalPrice);
+    const validationError = await validateFormData(formData, totalPrice);
     if (validationError) {
       alert(validationError);
       return;
@@ -147,6 +167,8 @@ export default function CateringOrderPage() {
         customer_name: formData.customerName || '',
         email: formData.email || '',
         phone: formData.phone || '',
+        kakaotalk_name: formData.kakaotalkName,
+        instagram_name: formData.instagramName,
         cake_id: cake.id,
         cake_name: cake.name,
         size: formData.size === 'other' ? `${quantity} cups` : `${formData.size} cups`,
@@ -154,7 +176,7 @@ export default function CateringOrderPage() {
         base_color: formData.baseColor,
         delivery_date: formData.pickupDate || '',
         pickup_time: formData.pickupTime || '',
-        customer_type: 'new',
+        customer_type: formData.customerType || 'new',
         delivery_option: formData.deliveryOption || 'pickup',
         address: formData.deliveryAddress,
         payment_method: formData.paymentMethod || 'venmo',
@@ -231,10 +253,8 @@ export default function CateringOrderPage() {
             <div className="bg-white rounded-lg shadow-lg p-6">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Quantity Selection */}
-                <div>
-                  <Label htmlFor="quantity" className="text-sm font-medium text-gray-700 mb-2 block">
-                    Quantity *
-                  </Label>
+                <div className="space-y-2">
+                  <h3 className="font-medium">Quantity <span className="text-red-500">*</span></h3>
                   <RadioGroup
                     value={formData.size}
                     onValueChange={(value) => handleInputChange('size', value)}
@@ -268,10 +288,8 @@ export default function CateringOrderPage() {
                 </div>
 
                 {/* Flavor Selection */}
-                <div>
-                  <Label htmlFor="flavor" className="text-sm font-medium text-gray-700 mb-2 block">
-                    Flavor *
-                  </Label>
+                <div className="space-y-2">
+                  <h3 className="font-medium">Flavor <span className="text-red-500">*</span></h3>
                   <RadioGroup
                     value={formData.flavor}
                     onValueChange={(value) => handleInputChange('flavor', value)}
@@ -289,20 +307,19 @@ export default function CateringOrderPage() {
                 </div>
 
                 {/* Topper Selection */}
-                <div>
-                  <Label htmlFor="topper" className="text-sm font-medium text-gray-700 mb-2 block">
-                    Topper Option
-                  </Label>
+                <div className="space-y-2">
+                  <h3 className="font-medium">Topper Option <span className="text-red-500">*</span></h3>
                   <RadioGroup
                     value={formData.topperOption}
                     onValueChange={(value) => handleInputChange('topperOption', value)}
                     className="space-y-2"
+                    required
                   >
                     {topperOptions.map(topper => (
                       <div key={topper} className="flex items-center space-x-2">
                         <RadioGroupItem value={topper} id={`topper-${topper}`} />
                         <Label htmlFor={`topper-${topper}`} className="text-sm">
-                          {topper} {cake.topperPricing?.[topper] && cake.topperPricing[topper] > 0 && `(+$${cake.topperPricing[topper]} per cup)`}
+                          {topper} {cake.topperPricing?.[topper] && cake.topperPricing[topper] > 0 ? `(+$${cake.topperPricing[topper]} per cup)` : ''}
                         </Label>
                       </div>
                     ))}
@@ -333,7 +350,7 @@ export default function CateringOrderPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="customerName" className="text-sm font-medium text-gray-700 mb-1 block">
-                        Full Name *
+                        Full Name <span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="customerName"
@@ -345,7 +362,7 @@ export default function CateringOrderPage() {
                     
                     <div>
                       <Label htmlFor="email" className="text-sm font-medium text-gray-700 mb-1 block">
-                        Email *
+                        Email <span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="email"
@@ -359,7 +376,7 @@ export default function CateringOrderPage() {
                   
                   <div className="mt-4">
                     <Label htmlFor="phone" className="text-sm font-medium text-gray-700 mb-1 block">
-                      Phone Number *
+                      Phone Number <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="phone"
@@ -371,37 +388,80 @@ export default function CateringOrderPage() {
                   </div>
                 </div>
 
+                {/* Social Media Info */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="kakaotalkName" className="text-sm font-medium text-gray-700 mb-1 block">
+                      KakaoTalk Name
+                    </Label>
+                    <Input
+                      id="kakaotalkName"
+                      value={formData.kakaotalkName || ''}
+                      onChange={(e) => handleInputChange('kakaotalkName', e.target.value)}
+                      placeholder="Your KakaoTalk username"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="instagramName" className="text-sm font-medium text-gray-700 mb-1 block">
+                      Instagram Name
+                    </Label>
+                    <Input
+                      id="instagramName"
+                      value={formData.instagramName || ''}
+                      onChange={(e) => handleInputChange('instagramName', e.target.value)}
+                      placeholder="@yourusername"
+                    />
+                  </div>
+                </div>
+
+                {/* Customer Type - Required */}
+                <div className="space-y-2">
+                  <h3 className="font-medium">Customer Type <span className="text-red-500">*</span></h3>
+                  <RadioGroup 
+                    value={formData.customerType}
+                    onValueChange={(value) => handleInputChange('customerType', value)}
+                    className="flex space-x-6"
+                    required
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="new" id="customer-new" />
+                      <Label htmlFor="customer-new" className="cursor-pointer">New Customer</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="existing" id="customer-existing" />
+                      <Label htmlFor="customer-existing" className="cursor-pointer">Existing Customer</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+
                 {/* Pickup/Delivery Information */}
                 <div className="border-t pt-6">
                   <h3 className="text-lg font-semibold text-gray-800 mb-4">Pickup/Delivery Information</h3>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="pickupDate" className="text-sm font-medium text-gray-700 mb-1 block">
-                        Pickup Date *
-                      </Label>
-                      <Input
-                        id="pickupDate"
-                        type="date"
-                        value={formData.pickupDate}
-                        onChange={(e) => handleInputChange('pickupDate', e.target.value)}
-                        min={getTodaysDate()}
+                      <AvailabilityDatePicker
+                        value={formData.pickupDate || ''}
+                        onChange={(date) => handleInputChange('pickupDate', date)}
+                        label={formData.deliveryOption === 'delivery' ? 'delivery' : 'pickup'}
                         required
                       />
                     </div>
                     
-                    <div>
-                      <Label htmlFor="pickupTime" className="text-sm font-medium text-gray-700 mb-1 block">
-                        Pickup Time *
-                      </Label>
+                    <div className="space-y-2">
+                      <h3 className="font-medium">
+                        {formData.deliveryOption === 'delivery' ? 'Delivery' : 'Pickup'} Time <span className="text-red-500">*</span>
+                        <span className="text-sm font-normal text-gray-600 block">Operating hours: 10am - 8pm</span>
+                      </h3>
                       <select
-                        id="pickupTime"
                         value={formData.pickupTime}
                         onChange={(e) => handleInputChange('pickupTime', e.target.value)}
-                        required
                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                        required
                       >
-                        <option value="">Select time</option>
+                        <option value="">Select {formData.deliveryOption === 'delivery' ? 'delivery' : 'pickup'} time</option>
                         {PICKUP_TIMES.map(time => (
                           <option key={time} value={time}>{time}</option>
                         ))}
@@ -411,7 +471,7 @@ export default function CateringOrderPage() {
                   
                   <div className="mt-4">
                     <Label htmlFor="deliveryOption" className="text-sm font-medium text-gray-700 mb-2 block">
-                      Delivery Option *
+                      Delivery Option <span className="text-red-500">*</span>
                     </Label>
                     <RadioGroup
                       value={formData.deliveryOption}
@@ -432,7 +492,7 @@ export default function CateringOrderPage() {
                   {formData.deliveryOption === 'delivery' && (
                     <div className="mt-4">
                       <Label htmlFor="deliveryAddress" className="text-sm font-medium text-gray-700 mb-1 block">
-                        Delivery Address *
+                        Delivery Address <span className="text-red-500">*</span>
                       </Label>
                       <Textarea
                         id="deliveryAddress"
@@ -461,7 +521,7 @@ export default function CateringOrderPage() {
                 {/* Payment Method */}
                 <div className="border-t pt-6">
                   <Label htmlFor="paymentMethod" className="text-sm font-medium text-gray-700 mb-2 block">
-                    Payment Method *
+                    Payment Method <span className="text-red-500">*</span>
                   </Label>
                   <RadioGroup
                     value={formData.paymentMethod}

@@ -77,12 +77,24 @@ export default function OrderConfirmationPage() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    // Parse date string as local date to avoid timezone issues
+    const [year, month, day] = dateString.split('-').map(Number);
+    if (!year || !month || !day) return dateString; // Fallback if parsing fails
+    
+    // Create date parts manually to ensure accuracy
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    const dayNames = [
+      'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+    ];
+    
+    const date = new Date(year, month - 1, day);
+    const dayOfWeek = date.getDay();
+    
+    return `${dayNames[dayOfWeek]}, ${monthNames[month - 1]} ${day}, ${year}`;
   };
 
   const getPaymentInstructions = () => {

@@ -5,7 +5,6 @@ import FeaturedCakes from '@/components/MainPage/FeaturedCakes';
 import ScheduleCalendar from '@/components/MainPage/ScheduleCalendar';
 import AboutSection from '@/components/MainPage/AboutSection';
 import Contacts from '@/components/MainPage/Contacts';
-import SupabaseTest from '@/components/SupabaseTest';
 
 const HOME_SECTIONS = [
   Hero,
@@ -18,9 +17,6 @@ const HOME_SECTIONS = [
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="p-4">
-        <SupabaseTest />
-      </div>
       {HOME_SECTIONS.map((Section, index) => (
         <Section key={index} />
       ))}

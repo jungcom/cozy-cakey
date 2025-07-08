@@ -1,8 +1,7 @@
-Based on the order table I have in supabase, I want to create a separate admin page for viewing the orders. The admin page should have the following features:
+Based on our calendar component in /components/ui/calendar.tsx and /components/ui/calendar-14.tsx, I want to create a data structure in supabase that can show whether cake orders are available or not on a given date. Help me plan out the DB schema and write the SQL queries to create the tables and insert the data.
 
-- View all orders
-- Edit order details
-- Delete order
-- View order history
+- All Mondays and Sundays will be unavailable for booking
+- If there are more than three orders in a day, that day will be unavailable to order and be marked as booked.
+- If there are less than three orders in a day, that day will be available to order and be marked as available.
 
-I want to use middleware to protect the admin page. This admin page should have a login page and once logged in, I will be able to see all the orders and be able to edit, delete, and view order history.
+The landing page in the schedule calendar should be able to show the availability of the user on a given date, which will be grabbed from the supabase database.
