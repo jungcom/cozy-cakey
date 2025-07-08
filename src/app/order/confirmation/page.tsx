@@ -56,7 +56,7 @@ export default function OrderConfirmationPage() {
 
   if (error || !order) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center">
         <div className="max-w-md mx-auto p-8 text-center bg-background1 rounded-lg border border-primary">
           <div className="text-tertiary mb-4">
             <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,7 +104,7 @@ export default function OrderConfirmationPage() {
   const paymentInfo = getPaymentInstructions();
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Success Header */}
         <div className="bg-background1 rounded-lg shadow-sm p-8 mb-8 text-center border border-primary">

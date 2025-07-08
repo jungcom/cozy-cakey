@@ -81,13 +81,60 @@ export default function CateringOrderPage() {
     return basePrice + flavorPrice + topperPrice;
   };
 
+  const validateFormData = (formData: Omit<OrderFormData, 'cakeId'>, totalPrice: number): string | null => {
+    const requiredFields = [
+      { field: 'size', message: 'Please select a quantity' },
+      { field: 'flavor', message: 'Please select a flavor' },
+      { field: 'pickupDate', message: 'Please select a pickup date' },
+      { field: 'customerName', message: 'Please enter your full name' },
+      { field: 'email', message: 'Please enter your email address' },
+      { field: 'phone', message: 'Please enter your phone number' },
+      { field: 'pickupTime', message: 'Please select a pickup time' },
+      { field: 'deliveryOption', message: 'Please select pickup or delivery' },
+      { field: 'paymentMethod', message: 'Please select a payment method' },
+    ];
+    
+    for (const { field, message } of requiredFields) {
+      if (!formData[field as keyof typeof formData]) {
+        return message;
+      }
+    }
+    
+    if (!formData.allergyAgreement) {
+      return 'You must agree to the allergy disclaimer to place an order';
+    }
+    
+    if (formData.size === 'other' && (!formData.customQuantity || parseInt(formData.customQuantity) < 1)) {
+      return 'Please enter a valid quantity for custom orders';
+    }
+    
+    if (formData.deliveryOption === 'delivery' && totalPrice < 50) {
+      return 'Delivery is only available for orders over $50';
+    }
+    
+    if (formData.deliveryOption === 'delivery' && !formData.deliveryAddress?.trim()) {
+      return 'Please provide a delivery address';
+    }
+    
+    if (formData.topperOption === 'Custom Topper' && !formData.customTopperText?.trim()) {
+      return 'Please enter text for the custom topper';
+    }
+    
+    if ((formData.customTopperText?.length || 0) > 12) {
+      return 'Custom topper text cannot exceed 12 characters';
+    }
+    
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!cake) return;
     
-    // Validate allergy agreement
-    if (!formData.allergyAgreement) {
-      alert('Please acknowledge the allergy disclaimer before placing your order.');
+    const totalPrice = calculateTotal();
+    const validationError = validateFormData(formData, totalPrice);
+    if (validationError) {
+      alert(validationError);
       return;
     }
     
@@ -95,7 +142,6 @@ export default function CateringOrderPage() {
     
     try {
       const quantity = formData.size === 'other' ? parseInt(formData.customQuantity || '0') || 0 : parseInt(formData.size);
-      const totalPrice = calculateTotal();
       
       const orderData: Order = {
         customer_name: formData.customerName || '',
@@ -123,10 +169,31 @@ export default function CateringOrderPage() {
         }
       };
 
-      const orderId = await submitOrder(orderData);
-      router.push(`/order/confirmation?orderId=${orderId}`);
+      // Submit order to Supabase
+      const result = await submitOrder(orderData);
+      console.log('Order submitted successfully:', result);
+      
+      // Send confirmation email
+      if (result && result[0] && result[0].id) {
+        try {
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ order: result[0] }),
+          });
+        } catch (emailError) {
+          console.error('Failed to send confirmation email:', emailError);
+          // Continue with redirect even if email fails
+        }
+        
+        router.push(`/order/confirmation?id=${result[0].id}`);
+      } else {
+        router.push('/order/confirmation');
+      }
     } catch (error) {
-      console.error('Order submission failed:', error);
+      console.error('Error submitting order:', error);
       alert('Failed to submit order. Please try again.');
     } finally {
       setIsSubmitting(false);
