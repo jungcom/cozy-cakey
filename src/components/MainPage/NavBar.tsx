@@ -2,9 +2,11 @@
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import { pacifico } from '@/app/layout';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function NavBar() {
   const { language, setLanguage, t } = useLanguage();
+  const { isAuthenticated } = useAuth();
   return (
     <header className="bg-primary shadow-md">
       <nav className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -16,6 +18,9 @@ export default function NavBar() {
           <Link href="/about" className="text-secondary hover:text-tertiary font-medium text-lg py-3 px-4 rounded-md hover:bg-primary/10 transition-colors">{t('about')}</Link>
           <Link href="/collection" className="text-secondary hover:text-tertiary font-medium text-lg py-3 px-4 rounded-md hover:bg-primary/10 transition-colors">{t('cakes')}</Link>
           <Link href="/contact" className="text-secondary hover:text-tertiary font-medium text-lg py-3 px-4 rounded-md hover:bg-primary/10 transition-colors">{t('contact')}</Link>
+          {isAuthenticated && (
+            <Link href="/admin/orders" className="text-secondary hover:text-tertiary font-medium text-lg py-3 px-4 rounded-md hover:bg-primary/10 transition-colors">{t('admin')}</Link>
+          )}
         </div>
         {/* Language Switcher - top right, tighter and further in corner */}
         <div className="hidden md:flex fixed right-3 top-3 z-30 items-center space-x-1 bg-primary/80 rounded-full px-1 py-0.5 shadow-sm">

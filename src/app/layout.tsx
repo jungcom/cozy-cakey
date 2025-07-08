@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pacifico } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/MainPage/NavBar";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { ConditionalNavBar } from "@/components/ConditionalNavBar";
 
 export const pacifico = Pacifico({
   weight: '400',
@@ -32,7 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} antialiased bg-gray-50 flex flex-col min-h-screen`}
       >
         <LanguageProvider>
-          <NavBar />
+          <ConditionalNavBar />
           <main className="flex-grow">
             {children}
           </main>

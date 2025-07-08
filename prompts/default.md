@@ -1,19 +1,8 @@
-For mini cake cup catering cakes, add  data to cakes.ts with the following
-category: catering
-Quantity: 
-    20 = 100$
-    25 = 125$
-    30 = 150$
-    35 = 175$
-    40 = 200$
-    Other: 5$ per cup
-Flavor:
-    Vanilla = $0
-    Chocolate = $0
-    Valrhona Chocolate Crunch (addon) = $1 per cup
-Topper:
-    2$ per cup
+Based on the order table I have in supabase, I want to create a separate admin page for viewing the orders. The admin page should have the following features:
 
-fill out the rest required fields
+- View all orders
+- Edit order details
+- Delete order
+- View order history
 
-in the collection page, if the defaultcakecard is catering, route directly to the order form with the mini cake cup information.
+I want to use middleware to protect the admin page. This admin page should have a login page and once logged in, I will be able to see all the orders and be able to edit, delete, and view order history.

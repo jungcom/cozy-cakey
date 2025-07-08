@@ -24,6 +24,7 @@ const translations: Translations = {
     about: 'About Us',
     cakes: 'Our Cakes',
     contact: 'Contact',
+    admin: 'Admin',
     hero: {
       title: 'Handcrafted Cakes for Every Occasion',
       subtitle: 'Baked with love, delivered with joy.',
@@ -38,6 +39,7 @@ const translations: Translations = {
     about: '회사소개',
     cakes: '케이크',
     contact: '문의하기',
+    admin: '관리자',
     hero: {
       title: '모든 특별한 순간을 위한 핸드메이드 케이크',
       subtitle: '사랑으로 구워 기쁨으로 전해드립니다.',
