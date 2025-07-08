@@ -30,6 +30,7 @@ export interface Cake {
   candyCrownColorPricing?: { [color: string]: number }; // Bead Cake only
   letteringColorPricing?: { [color: string]: number }; // Big Bow, Bow, Bunny, Simply Cakes
   bowColorPricing?: { [color: string]: number }; // Big Bow, Bow Cakes only
+  topperPricing?: { [option: string]: number }; // Mini Cake Cups only
 }
 
 // Available cake flavors
@@ -59,7 +60,7 @@ export const cakeCategories: CakeCategory[] = [
   },
   {
     id: 'tiered',
-    name: 'Tiered Cakes',
+    name: 'Tall/Tiered Cakes',
     description: 'Multi-tiered cakes for weddings and special events',
     image: '/images/cakes/Tall&Tiered/ribbon.jpeg',
     alt: 'Cake with large fondant bow decoration'
@@ -297,6 +298,35 @@ export const designCakes: Cake[] = [
       'Baby Blue': 3,
       'Lavender': 3,
       'Other': 3
+    }
+  },
+  {
+    id: 'mini-cake-cups',
+    name: 'Mini Cake Cups',
+    description: 'Perfect for catering events - delicious mini cake cups with customizable flavors and toppings',
+    image: '/images/cakes/Catering/strawberry&packaged.jpeg',
+    alt: 'Mini cake cups for catering',
+    category: 'catering',
+    price: 100,
+    sizePricing: {
+      '20': 100,
+      '25': 125,
+      '30': 150,
+      '35': 175,
+      '40': 200,
+      'other': 5
+    },
+    flavorPricing: {
+      'Vanilla': 0,
+      'Chocolate': 0,
+      'Valrhona Chocolate Crunch (addon)': 1
+    },
+    baseColorPricing: {
+      'Standard': 0
+    },
+    topperPricing: {
+      'None': 0,
+      'Custom Topper': 2
     }
   }
 ];

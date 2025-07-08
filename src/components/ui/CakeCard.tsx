@@ -49,9 +49,12 @@ const DefaultCakeCard = ({ id, name, description, image, alt }: BaseCakeCardProp
 const CollectionCakeCard = ({ id, name, image, alt }: BaseCakeCardProps & { price?: string }) => {
   const [imageError, setImageError] = useState(false);
 
+  // Route directly to order form for catering category
+  const href = id === 'catering' ? '/collection/catering/order' : `/collection/${id}`;
+
   return (
     <a 
-      href={`/collection/${id}`} 
+      href={href} 
       className="group block h-full rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-background to-background1 border-2 border-primary/30 hover:border-secondary/50 transform hover:-translate-y-2"
     >
       {/* Image container */}

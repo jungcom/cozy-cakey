@@ -10,7 +10,7 @@ export interface SizeOption {
 
 export interface OrderFormData {
   cakeId: string;
-  size: string; // Now uses inches as string (e.g., "6", "7", "8")
+  size: string; // Now uses inches as string (e.g., "6", "7", "8") or quantity for catering
   flavor: string;
   deliveryDate: string;
   name: string;
@@ -37,6 +37,17 @@ export interface OrderFormData {
   customCandyCrownColor?: string;
   bowColor?: string;
   customBowColor?: string;
+  // Catering-specific fields
+  topperOption?: string;
+  customQuantity?: string;
+  customTopperText?: string;
+  // Unified field names for compatibility
+  customerName?: string;
+  pickupDate?: string;
+  deliveryAddress?: string;
+  specialInstructions?: string;
+  letteringText?: string;
+  agreedToAllergens?: string;
 }
 
 export const DEFAULT_SIZES: SizeOption[] = [
