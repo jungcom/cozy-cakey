@@ -177,8 +177,25 @@ export default function OrderPage() {
       const result = await submitOrder(orderData);
       console.log('Order submitted successfully:', result);
       
-      // Redirect to thank you page or show success message
-      router.push('/order/confirmation');
+      // Send confirmation email
+      if (result && result[0] && result[0].id) {
+        try {
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ order: result[0] }),
+          });
+        } catch (emailError) {
+          console.error('Failed to send confirmation email:', emailError);
+          // Continue with redirect even if email fails
+        }
+        
+        router.push(`/order/confirmation?id=${result[0].id}`);
+      } else {
+        router.push('/order/confirmation');
+      }
     } catch (error) {
       console.error('Error submitting order:', error);
       alert('Failed to submit order. Please try again.');
