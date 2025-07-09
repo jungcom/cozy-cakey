@@ -24,6 +24,7 @@ export default function Footer({
       <Link
         href={buttonHref}
         className="inline-block bg-amber-600 text-white px-6 py-3 rounded-full font-medium hover:bg-amber-700 transition-colors"
+        style={{ color: 'white' }}
       >
         {buttonText}
       </Link>

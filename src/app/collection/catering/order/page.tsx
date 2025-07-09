@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import CakeImageDescription from '@/components/CollectionPage/CollectionOrderPage/CakeImageDescription';
 import AvailabilityDatePicker from '@/components/ui/AvailabilityDatePicker';
-import { designCakes, type Cake } from '@/data/cakes';
+import { cateringCakes, type Cake } from '@/data/cakes';
 import { submitOrder, type Order } from '@/lib/supabase';
 import { 
   PICKUP_TIMES,
@@ -26,8 +26,8 @@ export default function CateringOrderPage() {
   const [formData, setFormData] = useState<Omit<OrderFormData, 'cakeId'>>(getDefaultFormData());
   
   useEffect(() => {
-    // Find mini cake cups in the designCakes array
-    const miniCakeCups = designCakes.find(c => c.id === 'mini-cake-cups');
+    // Find mini cake cups in the cateringCakes array
+    const miniCakeCups = cateringCakes.find(c => c.id === 'mini-cake-cups');
     setCake(miniCakeCups || null);
     setIsLoading(false);
   }, []);
@@ -625,6 +625,7 @@ export default function CateringOrderPage() {
                     type="submit"
                     disabled={isSubmitting}
                     className="w-full bg-amber-600 text-white py-3 px-6 rounded-md font-semibold hover:bg-amber-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                    style={{ color: 'white' }}
                   >
                     {isSubmitting ? 'Processing...' : 'Place Order'}
                   </button>

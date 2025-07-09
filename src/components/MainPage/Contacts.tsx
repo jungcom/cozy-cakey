@@ -115,6 +115,7 @@ export default function Contacts() {
               <button
                 type="submit"
                 className="w-full bg-amber-600 text-white py-3 px-6 rounded-md hover:bg-amber-700 transition-colors font-medium"
+                style={{ color: 'white' }}
               >
                 Send Message
               </button>

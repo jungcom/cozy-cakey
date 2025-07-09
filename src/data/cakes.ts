@@ -334,3 +334,59 @@ export const cateringCakes: Cake[] = [
     }
   }
 ];
+
+// Tiered cakes for special occasions
+export const tieredCakes: Cake[] = [
+  {
+    id: 'tiered-cake',
+    name: 'Tiered Cake',
+    description: 'Multi-layered tiered cakes perfect for weddings and special celebrations',
+    image: '/images/cakes/Tall&Tiered/WeddingCake.jpeg',
+    alt: 'Multi-tiered wedding cake',
+    category: 'tiered',
+    price: 150,
+    sizePricing: {
+      '2-tier': 150,
+      '3-tier': 225,
+      '4-tier': 300
+    },
+    flavorPricing: {
+      'Vanilla': 0,
+      'Chocolate': 0,
+      'Valrhona Chocolate Crunch (addon)': 8
+    },
+    baseColorPricing: {
+      'White': 0,
+      'Baby Pink': 10,
+      'Baby Blue': 10,
+      'Lavender': 10,
+      'Other': 10
+    }
+  },
+  {
+    id: 'tall-cake',
+    name: 'Tall Cake',
+    description: 'Elegant tall single-layer cakes with impressive height and beautiful decorations',
+    image: '/images/cakes/Tall&Tiered/ribbon.jpeg',
+    alt: 'Tall single-layer cake with ribbon decoration',
+    category: 'tiered',
+    price: 120,
+    sizePricing: {
+      '8-inch': 120,
+      '10-inch': 150,
+      '12-inch': 180
+    },
+    flavorPricing: {
+      'Vanilla': 0,
+      'Chocolate': 0,
+      'Valrhona Chocolate Crunch (addon)': 6
+    },
+    baseColorPricing: {
+      'White': 0,
+      'Baby Pink': 8,
+      'Baby Blue': 8,
+      'Lavender': 8,
+      'Other': 8
+    }
+  }
+];
