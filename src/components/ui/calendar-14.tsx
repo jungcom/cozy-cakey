@@ -94,15 +94,8 @@ export default function Calendar14() {
   // Show loading state
   if (loading) {
     return (
-      <div className="mx-auto my-8 w-fit">
-        <div className="animate-pulse">
-          <div className="h-12 w-12 bg-gray-200 rounded mb-4"></div>
-          <div className="grid grid-cols-7 gap-1">
-            {[...Array(35)].map((_, i) => (
-              <div key={i} className="h-12 w-12 bg-gray-200 rounded"></div>
-            ))}
-          </div>
-        </div>
+      <div className="mx-auto my-8 w-fit flex items-center justify-center min-h-[300px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     )
   }

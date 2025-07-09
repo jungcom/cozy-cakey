@@ -20,6 +20,7 @@ import {
   Trash2
 } from 'lucide-react'
 import { supabase, Order } from '@/lib/supabase'
+import { formatDateInBusinessTimezone } from '@/utils/timezone'
 
 export default function OrderDetailPage() {
   const params = useParams()
@@ -200,7 +201,7 @@ export default function OrderDetailPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2">
                     <Calendar size={16} />
-                    <span><span className="font-medium">Date:</span> {new Date(order.delivery_date).toLocaleDateString()}</span>
+                    <span><span className="font-medium">Date:</span> {formatDateInBusinessTimezone(order.delivery_date)}</span>
                   </div>
                   <div><span className="font-medium">Pickup Time:</span> {order.pickup_time}</div>
                   <div><span className="font-medium">Option:</span> {order.delivery_option}</div>

@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { Eye, Search, Calendar, Package, User, Phone, Mail } from 'lucide-react'
 import { supabase, Order } from '@/lib/supabase'
+import { formatDateInBusinessTimezone, toBusinessTimezone } from '@/utils/timezone'
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([])
@@ -54,8 +55,8 @@ export default function AdminOrdersPage() {
 
 
   const getStatusColor = (deliveryDate: string) => {
-    const today = new Date()
-    const delivery = new Date(deliveryDate)
+    const today = toBusinessTimezone(new Date())
+    const delivery = toBusinessTimezone(deliveryDate)
     const diffDays = Math.ceil((delivery.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
     
     if (diffDays < 0) return 'bg-red-100 text-red-800'
@@ -154,7 +155,7 @@ export default function AdminOrdersPage() {
                           </div>
                           <div className="flex items-center gap-1">
                             <Calendar size={14} />
-                            <span>Delivery: {new Date(order.delivery_date).toLocaleDateString()}</span>
+                            <span>Delivery: {formatDateInBusinessTimezone(order.delivery_date)}</span>
                           </div>
                         </div>
                         
