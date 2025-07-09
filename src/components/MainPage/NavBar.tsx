@@ -8,7 +8,7 @@ export default function NavBar() {
   const { language, setLanguage, t } = useLanguage();
   const { isAuthenticated } = useAuth();
   return (
-    <header className="bg-primary shadow-md">
+    <header className="bg-primary shadow-md relative z-50">
       <nav className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className={`text-4xl md:text-5xl text-tertiary leading-tight hover:opacity-90 transition-opacity ${pacifico.className}`}>
           Cozy Cakey

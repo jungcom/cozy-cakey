@@ -7,7 +7,7 @@ import { tieredCakes } from '@/data/cakes';
 
 export default function TieredCakesPage() {
   return (
-    <PageContainer className="bg-amber-50">
+    <PageContainer className="bg-background1">
       <PageHeader
         title="Tiered & Tall Cakes"
         subtitle="Choose between our stunning tiered cakes for special celebrations or elegant tall cakes with impressive height."

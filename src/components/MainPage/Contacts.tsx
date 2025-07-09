@@ -2,7 +2,7 @@ import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaInstagram, FaCommentAlt
 
 export default function Contacts() {
   return (
-    <section className="bg-amber-800 text-white py-16">
+    <section className="bg-tertiary text-white py-16">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">Visit Us or Get in Touch</h2>
         

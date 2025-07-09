@@ -7,7 +7,7 @@ import { cakeCategories } from '@/data/cakes';
 
 export default function CollectionPage() {
   return (
-    <PageContainer className="bg-amber-50">
+    <PageContainer className="bg-background1">
       <PageHeader
         title="Our Cake Collection"
         subtitle="Explore our delicious selection of handcrafted cakes, each made with the finest ingredients and a touch of love."

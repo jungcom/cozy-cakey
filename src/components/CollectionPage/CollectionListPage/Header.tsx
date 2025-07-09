@@ -17,7 +17,7 @@ export default function Header({
   children,
 }: HeaderProps) {
   return (
-    <div className="min-h-screen bg-amber-50 py-12 px-4">
+    <div className="min-h-screen bg-background1 py-12 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
         <div className="flex flex-col lg:flex-row items-center gap-12 mb-12">

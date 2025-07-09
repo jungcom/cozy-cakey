@@ -1,32 +1,17 @@
-# Fix Admin Order Page Timezone Issues
+# Update Contacts Section Background to Tertiary Color
 
-## Problem
-The admin order page is displaying pickup/delivery dates in the user's local timezone instead of the business timezone (America/New_York), causing confusion for admin users.
+## Analysis
+- Current background: `bg-amber-800` (dark amber)
+- Target background: tertiary color `#b37a7a` (defined in globals.css)
+- Available utility class: `bg-tertiary`
 
-## Plan
+## Todo Items
 
-### 1. Create timezone utility functions
-- [ ] Create `/src/utils/timezone.ts` with functions to:
-  - Convert dates to business timezone for display
-  - Format dates consistently across admin pages
-  - Handle edge cases for invalid dates
-
-### 2. Fix orders list page (`/src/app/admin/orders/page.tsx`)
-- [ ] Update line 157: Replace `toLocaleDateString()` with business timezone formatting
-- [ ] Update status calculation logic (lines 56-64) to use business timezone
-- [ ] Ensure consistent date formatting throughout the component
-
-### 3. Fix order detail page (`/src/app/admin/orders/[id]/page.tsx`)
-- [ ] Update line 203: Replace `toLocaleDateString()` with business timezone formatting
-- [ ] Ensure all date displays use business timezone
-
-### 4. Test the changes
-- [ ] Verify dates display correctly in America/New_York timezone
-- [ ] Test with orders from different timezones
-- [ ] Confirm status calculations work correctly
+- [ ] Replace `bg-amber-800` with `bg-tertiary` in the contacts section
+- [ ] Test the visual appearance to ensure readability
+- [ ] Verify the change aligns with the overall design
 
 ## Implementation Notes
-- Use existing `date-fns` library with timezone utilities
-- Reference business timezone from `/src/config/business.ts`
-- Keep changes minimal and focused on timezone display only
-- Maintain existing functionality while fixing timezone issues
+- Simple one-line change in src/components/MainPage/Contacts.tsx:5
+- The tertiary color (#b37a7a) is a darker rose/mauve that should work well with the white text
+- This change will make the contacts section consistent with the bakery's warm color scheme

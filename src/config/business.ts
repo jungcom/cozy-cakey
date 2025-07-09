@@ -10,7 +10,7 @@ export const BUSINESS_CONFIG = {
   // Contact Information
   contact: {
     phone: '617-775-4505',
-    email: 'cozy.cakey@example.com', // TODO: Update with actual email
+    email: 'aprilneuguri@gmail.com', // TODO: Update with actual email
     instagram: '@cozy.cakey',
   },
   

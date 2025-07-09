@@ -45,6 +45,12 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <Button 
+        onClick={() => router.push('/')} 
+        className="absolute top-4 left-4"
+      >
+        ← Back to Home
+      </Button>
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Admin Login</CardTitle>
