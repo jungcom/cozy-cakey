@@ -23,7 +23,7 @@ export default function Hero() {
           {t('hero.subtitle', 'Baked with love, delivered with joy.')}
         </p>
         
-        <Button href="/cakes" variant="default">
+        <Button href="/collection" variant="default">
           {t('hero.cta', 'Explore Our Delicious Cakes')}
         </Button>
       </div>

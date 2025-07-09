@@ -83,14 +83,14 @@ export const cakeCategories: CakeCategory[] = [
     id: 'party',
     name: 'Party Favor',
     description: 'Small cakes with gift wrapping and personal messages',
-    image: '/images/cakes/bday-bunny-cake.jpg',
+    image: '/images/cakes/Design/bunny.jpeg',
     alt: 'Bunny-themed birthday cake'
   },
   {
     id: 'candles',
     name: 'Candles',
     description: 'Candles for birthdays and special occasions',
-    image: '/images/cakes/bday-bunny-cake.jpg',
+    image: '/images/cakes/Design/bunny.jpeg',
     alt: 'Bunny-themed birthday cake'
   },
 ];
@@ -299,7 +299,11 @@ export const designCakes: Cake[] = [
       'Lavender': 3,
       'Other': 3
     }
-  },
+  }
+];
+
+// Catering cakes for events and large orders
+export const cateringCakes: Cake[] = [
   {
     id: 'mini-cake-cups',
     name: 'Mini Cake Cups',

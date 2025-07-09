@@ -21,8 +21,8 @@ export default function ScheduleCalendar() {
           <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold text-tertiary mb-4">Booking Information</h3>
             <p className="text-foreground mb-4">
-              Select an available date to book your cake. We're available Tuesday through Saturday, 
-              with pickup times between 10 AM and 8 PM.
+              These are the available dates to book your cake. We're available Tuesday through Saturday, 
+              with pickup/delivery times between 10 AM and 8 PM.
             </p>
             
             <div className="flex items-center justify-between mt-6 pt-6 border-t border-primary/10">
@@ -41,13 +41,13 @@ export default function ScheduleCalendar() {
 
           <div className="mt-10 text-center">
             <p className="text-foreground/80 mb-6">
-              We're closed on Sundays. Please select an available date to book your order.
+              We're closed on Sundays and Mondays.
             </p>
             <Button 
+              href="/collection"
               className="px-6 rounded-full"
-              onClick={() => {}}
             >
-              Book Your Order
+              Start Your Order
             </Button>
           </div>
         </div>

@@ -35,11 +35,11 @@ const DefaultCakeCard = ({ id, name, description, image, alt }: BaseCakeCardProp
         <h3 className="text-xl font-semibold text-tertiary mb-2">{name}</h3>
         <p className="text-tertiary mb-6 line-clamp-2">{description}</p>
         <Button 
-          href={`/cakes/${id}`}
+          href={`/collection/${id}`}
           variant="default"
           className="w-full mt-auto"
         >
-          View Details
+          Start Order
         </Button>
       </div>
     </div>
