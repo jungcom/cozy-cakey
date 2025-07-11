@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { Order } from '@/lib/supabase';
+import { BUSINESS_CONFIG } from '@/config/business';
+import { formatDateInBusinessTimezone } from '@/utils/timezone';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -13,15 +15,30 @@ export async function POST(request: NextRequest) {
     }
 
     const formatDate = (dateString: string) => {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
+      if (!dateString) return '';
+      
+      try {
+        // Parse date string as local date to avoid timezone issues
+        const [year, month, day] = dateString.split('-').map(Number);
+        if (year && month && day) {
+          const date = new Date(year, month - 1, day);
+          return date.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        }
+        return '';
+      } catch (error) {
+        console.error('Error formatting date:', error);
+        return dateString; // fallback to original string
+      }
     };
 
-    const paymentMethod = order.payment_method === 'venmo' ? 'Venmo (Ellen-Kim-28)' : 'Zelle (617-775-4505, Ellen A Kim)';
+    const paymentMethod = order.payment_method === 'venmo' ? 
+      `Venmo (${BUSINESS_CONFIG.payment.venmo.handle})` : 
+      `Zelle (${BUSINESS_CONFIG.payment.zelle.phone}, ${BUSINESS_CONFIG.payment.zelle.name})`;
 
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">

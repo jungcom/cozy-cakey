@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { supabase, type Order } from '@/lib/supabase';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { CheckCircle, Phone, Mail, Instagram, Clock, MapPin, CreditCard } from 'lucide-react';
+import { BUSINESS_CONFIG } from '@/config/business';
 
 export default function OrderConfirmationPage() {
   const router = useRouter();
@@ -101,7 +102,7 @@ export default function OrderConfirmationPage() {
     if (order.payment_method === 'venmo') {
       return {
         method: 'Venmo',
-        details: 'Ellen-Kim-28',
+        details: BUSINESS_CONFIG.payment.venmo.handle,
         icon: <CreditCard className="w-5 h-5" />
       };
     } else {

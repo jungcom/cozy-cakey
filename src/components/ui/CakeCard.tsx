@@ -72,7 +72,7 @@ const CollectionCakeCard = ({ id, name, image, alt }: BaseCakeCardProps & { pric
       </div>
       
       {/* Content */}
-      <div className="p-4 bg-gradient-to-br from-background1/90 to-background2/70 backdrop-blur-sm flex items-center h-16">
+      <div className="p-4 bg-primary/95 backdrop-blur-sm flex items-center h-16">
         <h3 className="text-2xl font-bold text-tertiary group-hover:text-secondary transition-colors duration-300 leading-tight">
           {name}
         </h3>
@@ -104,7 +104,7 @@ const OrderCakeCard = ({ id, name, image, alt, price }: BaseCakeCardProps & { pr
       </div>
       
       {/* Content */}
-      <div className="p-4">
+      <div className="p-4 bg-primary/95">
         <h3 className="text-lg font-medium text-gray-900 text-center group-hover:text-amber-700 transition-colors">
           {name}
         </h3>

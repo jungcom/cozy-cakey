@@ -11,7 +11,7 @@ export default function AboutSection() {
           </p>
           <Link 
             href="/about"
-            className="inline-block bg-amber-700 text-white px-8 py-3 rounded-full hover:bg-amber-800 transition-colors font-medium"
+            className="inline-block bg-secondary text-white px-8 py-3 rounded-full hover:bg-tertiary transition-colors font-medium"
             style={{ color: 'white' }}
           >
             Learn More About Us

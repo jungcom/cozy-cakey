@@ -13,6 +13,7 @@ import TotalOrder from '@/components/CollectionPage/CollectionOrderPage/TotalOrd
 import AvailabilityDatePicker from '@/components/ui/AvailabilityDatePicker';
 import { designCakes, type Cake } from '@/data/cakes';
 import { submitOrder, type Order } from '@/lib/supabase';
+import { BUSINESS_CONFIG } from '@/config/business';
 import { 
   PICKUP_TIMES,
   getDefaultFormData, 
@@ -635,13 +636,13 @@ export default function OrderPage() {
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="venmo" id="payment-venmo" />
                 <Label htmlFor="payment-venmo" className="cursor-pointer">
-                  Venmo (Ellen-Kim-28)
+                  Venmo ({BUSINESS_CONFIG.payment.venmo.handle})
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="zelle" id="payment-zelle" />
                 <Label htmlFor="payment-zelle" className="cursor-pointer">
-                  Zelle (617-775-4505, Ellen A Kim)
+                  Zelle ({BUSINESS_CONFIG.payment.zelle.phone}, {BUSINESS_CONFIG.payment.zelle.name})
                 </Label>
               </div>
             </RadioGroup>

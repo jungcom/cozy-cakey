@@ -12,24 +12,30 @@ export const BUSINESS_CONFIG = {
     phone: '617-775-4505',
     email: 'aprilneuguri@gmail.com', // TODO: Update with actual email
     instagram: '@cozy.cakey',
+    address: {
+      street: '123 Sweet Street',
+      city: 'Wakefield',
+      state: 'MA',
+      zip: '01880'
+    }
   },
   
   // Payment Information
   payment: {
     venmo: {
       handle: 'Ellen-Kim-28',
-      displayName: 'Venmo (Ellen-Kim-28)'
+      displayName: 'Venmo'
     },
     zelle: {
       phone: '617-775-4505',
       name: 'Ellen A Kim',
-      displayName: 'Zelle (617-775-4505, Ellen A Kim)'
+      displayName: 'Zelle'
     }
   },
   
   // Business Hours and Operations
   operations: {
-    hours: '10am - 8pm',
+    hours: 'Tuesday - Saturday: 10am - 8pm\n\nClosed Sundays & Mondays',
     minimumDeliveryAmount: 50,
     advanceOrderDays: 7, // Minimum days in advance for orders
     timezone: 'America/New_York'
