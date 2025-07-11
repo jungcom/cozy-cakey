@@ -25,7 +25,7 @@ export default function Contacts() {
                 <FaEnvelope className="text-primary" />
                 <div>
                   <h4 className="font-medium">Email</h4>
-                  <a href={`mailto:${BUSINESS_CONFIG.contact.email}`} className="text-primary hover:text-white transition-colors">
+                  <a href={`mailto:${BUSINESS_CONFIG.contact.email}`} className="text-primary hover:!text-white transition-colors">
                     {BUSINESS_CONFIG.contact.email}
                   </a>
                 </div>

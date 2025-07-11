@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pacifico } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
-import { ConditionalNavBar } from "@/components/ConditionalNavBar";
+import { ConditionalNavBar } from "@/components/admin/ConditionalNavBar";
 
 export const pacifico = Pacifico({
   weight: '400',

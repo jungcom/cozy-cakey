@@ -1,8 +1,8 @@
 'use client';
 
-import Header from '@/components/CollectionPage/CollectionListPage/Header';
-import CakeList from '@/components/CollectionPage/CollectionListPage/CakeList';
-import Footer from '@/components/CollectionPage/CollectionListPage/Footer';
+import Header from '@/components/collection/CollectionListPage/Header';
+import CakeList from '@/components/collection/CollectionListPage/CakeList';
+import Footer from '@/components/collection/CollectionListPage/Footer';
 import { designCakes } from '@/data/cakes';
 import { useSorting } from '@/hooks/useSorting';
 

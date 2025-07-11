@@ -3,19 +3,32 @@
 import { notFound } from 'next/navigation';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import CakeImageDescription from '@/components/CollectionPage/CollectionOrderPage/CakeImageDescription';
-import TotalOrder from '@/components/CollectionPage/CollectionOrderPage/TotalOrder';
-import AvailabilityDatePicker from '@/components/ui/AvailabilityDatePicker';
+import CakeImageDescription from '@/components/collection/CollectionOrderPage/CakeImageDescription';
+import TotalOrder from '@/components/collection/CollectionOrderPage/TotalOrder';
+
+// Left column components
+import CakeSizeSelection from '@/components/collection/design/order/left-column/CakeSizeSelection';
+import FlavorSelection from '@/components/collection/design/order/left-column/FlavorSelection';
+import BaseColorSelection from '@/components/collection/design/order/left-column/BaseColorSelection';
+import CandyCrownColorSelection from '@/components/collection/design/order/left-column/CandyCrownColorSelection';
+import LetteringColorSelection from '@/components/collection/design/order/left-column/LetteringColorSelection';
+import BowColorSelection from '@/components/collection/design/order/left-column/BowColorSelection';
+import LetteringInput from '@/components/collection/design/order/left-column/LetteringInput';
+
+// Right column components
+import CustomerInformation from '@/components/collection/design/order/right-column/CustomerInformation';
+import CustomerType from '@/components/collection/design/order/right-column/CustomerType';
+import DeliveryOptions from '@/components/collection/design/order/right-column/DeliveryOptions';
+import DateTimeSelection from '@/components/collection/design/order/right-column/DateTimeSelection';
+import DeliveryAddress from '@/components/collection/design/order/right-column/DeliveryAddress';
+import PaymentMethod from '@/components/collection/design/order/right-column/PaymentMethod';
+import AllergyAgreement from '@/components/collection/design/order/right-column/AllergyAgreement';
+import QuestionsComments from '@/components/collection/design/order/right-column/QuestionsComments';
+import DiscountCode from '@/components/collection/design/order/right-column/DiscountCode';
 import { designCakes, type Cake } from '@/data/cakes';
 import { submitOrder, type Order } from '@/lib/supabase';
-import { BUSINESS_CONFIG } from '@/config/business';
 import { 
-  PICKUP_TIMES,
   getDefaultFormData, 
   calculateCakeTotalPrice,
   getSizeOptionsFromCake,
@@ -245,459 +258,111 @@ export default function OrderPage() {
           {/* Cake Preview */}
           <CakeImageDescription cake={cake} />
 
-          {/* Cake Size - Required */}
-          <div className="space-y-2">
-            <h3 className="font-medium">Cake Size <span className="text-red-500">*</span></h3>
-            <RadioGroup 
-              value={formData.size} 
-              onValueChange={handleSizeChange}
-              className="grid grid-cols-2 gap-4"
-              required
-            >
-              {getSizeOptionsFromCake(cake).map((size) => (
-                <div key={size.id} className="flex items-center space-x-2">
-                  <RadioGroupItem 
-                    value={size.id} 
-                    id={`size-${size.id}`} 
-                  />
-                  <Label htmlFor={`size-${size.id}`} className="cursor-pointer">
-                    <div>{size.label}</div>
-                    <div className="text-amber-600 font-medium">${size.price}</div>
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
+          <CakeSizeSelection
+            cake={cake}
+            selectedSize={formData.size}
+            onSizeChange={handleSizeChange}
+          />
 
-          {/* Flavor - Required */}
-          <div className="space-y-2">
-            <h3 className="font-medium">Flavor <span className="text-red-500">*</span></h3>
-            <RadioGroup 
-              value={formData.flavor}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, flavor: value }))}
-              className="space-y-2"
-              required
-            >
-              {getFlavorOptionsFromCake(cake).map((flavor) => (
-                <div key={flavor.id} className="flex items-center space-x-2">
-                  <RadioGroupItem 
-                    value={flavor.id} 
-                    id={`flavor-${flavor.id.toLowerCase().replace(/\s+/g, '-')}`}
-                  />
-                  <Label 
-                    htmlFor={`flavor-${flavor.id.toLowerCase().replace(/\s+/g, '-')}`} 
-                    className="cursor-pointer font-normal"
-                  >
-                    {flavor.label}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
+          <FlavorSelection
+            cake={cake}
+            selectedFlavor={formData.flavor}
+            onFlavorChange={(value) => setFormData(prev => ({ ...prev, flavor: value }))}
+          />
 
-          {/* Base Color - Required */}
-          <div className="space-y-2">
-            <h3 className="font-medium">Base Color <span className="text-red-500">*</span></h3>
-            <RadioGroup 
-              value={formData.baseColor}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, baseColor: value }))}
-              className="space-y-2"
-              required
-            >
-              {getBaseColorOptionsFromCake(cake).map((color) => (
-                <div key={color.id} className="flex items-center space-x-2">
-                  <RadioGroupItem 
-                    value={color.id} 
-                    id={`base-color-${color.id}`}
-                  />
-                  <Label 
-                    htmlFor={`base-color-${color.id}`} 
-                    className="cursor-pointer font-normal"
-                  >
-                    {color.label}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-            {formData.baseColor === 'Other' && (
-              <div className="mt-2">
-                <Input
-                  placeholder="Describe your custom color"
-                  value={formData.customBaseColor}
-                  onChange={(e) => setFormData(prev => ({ ...prev, customBaseColor: e.target.value }))}
-                  className="w-full"
-                />
-              </div>
-            )}
-          </div>
+          <BaseColorSelection
+            cake={cake}
+            selectedBaseColor={formData.baseColor}
+            customBaseColor={formData.customBaseColor || ''}
+            onBaseColorChange={(value) => setFormData(prev => ({ ...prev, baseColor: value }))}
+            onCustomBaseColorChange={(value) => setFormData(prev => ({ ...prev, customBaseColor: value }))}
+          />
 
-          {/* Candy Crown Color - Bead Cake Only */}
-          {getCandyCrownColorOptionsFromCake(cake) && (
-            <div className="space-y-2">
-              <h3 className="font-medium">Candy Crown Color <span className="text-red-500">*</span></h3>
-              <RadioGroup 
-                value={formData.candyCrownColor}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, candyCrownColor: value }))}
-                className="space-y-2"
-                required
-              >
-                {getCandyCrownColorOptionsFromCake(cake)!.map((color) => (
-                  <div key={color.id} className="flex items-center space-x-2">
-                    <RadioGroupItem 
-                      value={color.id} 
-                      id={`crown-color-${color.id}`}
-                    />
-                    <Label 
-                      htmlFor={`crown-color-${color.id}`} 
-                      className="cursor-pointer font-normal"
-                    >
-                      {color.label}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-              {formData.candyCrownColor === 'Other' && (
-                <div className="mt-2">
-                  <Input
-                    placeholder="Describe your custom crown color"
-                    value={formData.customCandyCrownColor}
-                    onChange={(e) => setFormData(prev => ({ ...prev, customCandyCrownColor: e.target.value }))}
-                    className="w-full"
-                  />
-                </div>
-              )}
-            </div>
-          )}
+          <CandyCrownColorSelection
+            cake={cake}
+            selectedCandyCrownColor={formData.candyCrownColor || ''}
+            customCandyCrownColor={formData.customCandyCrownColor || ''}
+            onCandyCrownColorChange={(value) => setFormData(prev => ({ ...prev, candyCrownColor: value }))}
+            onCustomCandyCrownColorChange={(value) => setFormData(prev => ({ ...prev, customCandyCrownColor: value }))}
+          />
 
-          {/* Lettering Color - For cakes with lettering options */}
-          {getLetteringColorOptionsFromCake(cake) && (
-            <div className="space-y-2">
-              <h3 className="font-medium">Lettering Color <span className="text-red-500">*</span></h3>
-              <RadioGroup 
-                value={formData.letteringColor}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, letteringColor: value }))}
-                className="space-y-2"
-                required
-              >
-                {getLetteringColorOptionsFromCake(cake)!.map((color) => (
-                  <div key={color.id} className="flex items-center space-x-2">
-                    <RadioGroupItem 
-                      value={color.id} 
-                      id={`lettering-color-${color.id}`}
-                    />
-                    <Label 
-                      htmlFor={`lettering-color-${color.id}`} 
-                      className="cursor-pointer font-normal"
-                    >
-                      {color.label}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-              {formData.letteringColor === 'Other' && (
-                <div className="mt-2">
-                  <Input
-                    placeholder="Describe your custom lettering color"
-                    value={formData.customLetteringColor}
-                    onChange={(e) => setFormData(prev => ({ ...prev, customLetteringColor: e.target.value }))}
-                    className="w-full"
-                  />
-                </div>
-              )}
-            </div>
-          )}
+          <LetteringColorSelection
+            cake={cake}
+            selectedLetteringColor={formData.letteringColor || ''}
+            customLetteringColor={formData.customLetteringColor || ''}
+            onLetteringColorChange={(value) => setFormData(prev => ({ ...prev, letteringColor: value }))}
+            onCustomLetteringColorChange={(value) => setFormData(prev => ({ ...prev, customLetteringColor: value }))}
+          />
 
-          {/* Bow Color - For cakes with bow options */}
-          {getBowColorOptionsFromCake(cake) && (
-            <div className="space-y-2">
-              <h3 className="font-medium">Bow Color <span className="text-red-500">*</span></h3>
-              <RadioGroup 
-                value={formData.bowColor}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, bowColor: value }))}
-                className="space-y-2"
-                required
-              >
-                {getBowColorOptionsFromCake(cake)!.map((color) => (
-                  <div key={color.id} className="flex items-center space-x-2">
-                    <RadioGroupItem 
-                      value={color.id} 
-                      id={`bow-color-${color.id}`}
-                    />
-                    <Label 
-                      htmlFor={`bow-color-${color.id}`} 
-                      className="cursor-pointer font-normal"
-                    >
-                      {color.label}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-              {formData.bowColor === 'Other' && (
-                <div className="mt-2">
-                  <Input
-                    placeholder="Describe your custom bow color"
-                    value={formData.customBowColor}
-                    onChange={(e) => setFormData(prev => ({ ...prev, customBowColor: e.target.value }))}
-                    className="w-full"
-                  />
-                </div>
-              )}
-            </div>
-          )}
+          <BowColorSelection
+            cake={cake}
+            selectedBowColor={formData.bowColor || ''}
+            customBowColor={formData.customBowColor || ''}
+            onBowColorChange={(value) => setFormData(prev => ({ ...prev, bowColor: value }))}
+            onCustomBowColorChange={(value) => setFormData(prev => ({ ...prev, customBowColor: value }))}
+          />
 
-          {/* Add Lettering */}
-          <div className="space-y-2">
-            <h3 className="font-medium">
-              Add Lettering <span className="text-sm font-normal text-gray-600">(optional, max 20 characters)</span>
-            </h3>
-            <Input
-              placeholder="Enter text for your cake (optional)"
-              value={formData.lettering}
-              onChange={(e) => {
-                if (e.target.value.length <= 20) {
-                  setFormData(prev => ({ ...prev, lettering: e.target.value }));
-                }
-              }}
-              className="w-full"
-              maxLength={20}
-            />
-            <div className="text-sm text-gray-500">
-              {formData.lettering?.length || 0}/20 characters
-            </div>
-          </div>
+          <LetteringInput
+            lettering={formData.lettering || ''}
+            onLetteringChange={(value) => setFormData(prev => ({ ...prev, lettering: value }))}
+          />
         </div>
 
         {/* Right Column */}
         <div className="space-y-6">
-          {/* Your Information */}
-          <div className="space-y-2">
-            <h3 className="font-medium">Your Information</h3>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name <span className="text-red-500">*</span></Label>
-                <Input 
-                  id="name" 
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="John Doe" 
-                  required 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  name="email"
-                  type="email" 
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="john@example.com" 
-                  required 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number <span className="text-red-500">*</span></Label>
-                <Input 
-                  id="phone" 
-                  name="phone"
-                  type="tel" 
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder="(123) 456-7890" 
-                  required 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="kakaotalkName">KakaoTalk Name</Label>
-                <Input 
-                  id="kakaotalkName" 
-                  name="kakaotalkName"
-                  value={formData.kakaotalkName}
-                  onChange={handleInputChange}
-                  placeholder="Your KakaoTalk username" 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="instagramName">Instagram Name</Label>
-                <Input 
-                  id="instagramName" 
-                  name="instagramName"
-                  value={formData.instagramName}
-                  onChange={handleInputChange}
-                  placeholder="@yourusername" 
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Customer Type - Required */}
-          <div className="space-y-2">
-            <h3 className="font-medium">Customer Type <span className="text-red-500">*</span></h3>
-            <RadioGroup 
-              value={formData.customerType}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, customerType: value as 'new' | 'existing' }))}
-              className="flex space-x-6"
-              required
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="new" id="customer-new" />
-                <Label htmlFor="customer-new" className="cursor-pointer">New Customer</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="existing" id="customer-existing" />
-                <Label htmlFor="customer-existing" className="cursor-pointer">Existing Customer</Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {/* Delivery Options - Required */}
-          <div className="space-y-2">
-            <h3 className="font-medium">Delivery Options <span className="text-red-500">*</span></h3>
-            <RadioGroup 
-              value={formData.deliveryOption}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, deliveryOption: value as 'pickup' | 'delivery' }))}
-              className="space-y-2"
-              required
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="pickup" id="delivery-pickup" />
-                <Label htmlFor="delivery-pickup" className="cursor-pointer">Pickup</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem 
-                  value="delivery" 
-                  id="delivery-delivery"
-                  disabled={totalPrice < 50}
-                />
-                <Label 
-                  htmlFor="delivery-delivery" 
-                  className={`cursor-pointer ${totalPrice < 50 ? 'text-gray-400' : ''}`}
-                >
-                  Delivery {totalPrice < 50 && '(Available for orders over $50)'}
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {/* Date - Required (after delivery options) */}
-          <AvailabilityDatePicker
-            value={formData.deliveryDate}
-            onChange={(date) => setFormData(prev => ({ ...prev, deliveryDate: date }))}
-            label={formData.deliveryOption === 'delivery' ? 'delivery' : 'pickup'}
-            required
-            className="w-full"
+          <CustomerInformation
+            name={formData.name || ''}
+            email={formData.email || ''}
+            phone={formData.phone || ''}
+            kakaotalkName={formData.kakaotalkName || ''}
+            instagramName={formData.instagramName || ''}
+            onInputChange={handleInputChange}
           />
 
-          {/* Time - Required (after delivery options) */}
-          <div className="space-y-2">
-            <h3 className="font-medium">
-              {formData.deliveryOption === 'delivery' ? 'Delivery' : 'Pickup'} Time <span className="text-red-500">*</span>
-              <span className="text-sm font-normal text-gray-600 block">Operating hours: 10am - 8pm</span>
-            </h3>
-            <select
-              value={formData.pickupTime}
-              onChange={(e) => setFormData(prev => ({ ...prev, pickupTime: e.target.value }))}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-              required
-            >
-              <option value="">Select {formData.deliveryOption === 'delivery' ? 'delivery' : 'pickup'} time</option>
-              {PICKUP_TIMES.map((time) => (
-                <option key={time} value={time}>{time}</option>
-              ))}
-            </select>
-          </div>
+          <CustomerType
+            customerType={formData.customerType || 'new'}
+            onCustomerTypeChange={(value) => setFormData(prev => ({ ...prev, customerType: value }))}
+          />
 
-          {/* Address (when delivery selected) */}
-          {formData.deliveryOption === 'delivery' && (
-            <div className="space-y-2">
-              <Label htmlFor="address">Delivery Address</Label>
-              <Textarea
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                placeholder="Enter your full delivery address"
-                className="min-h-[80px]"
-                required={formData.deliveryOption === 'delivery'}
-              />
-            </div>
-          )}
+          <DeliveryOptions
+            deliveryOption={formData.deliveryOption || 'pickup'}
+            totalPrice={totalPrice}
+            onDeliveryOptionChange={(value) => setFormData(prev => ({ ...prev, deliveryOption: value }))}
+          />
 
-          {/* Payment Method - Required */}
-          <div className="space-y-2">
-            <h3 className="font-medium">Payment Method <span className="text-red-500">*</span></h3>
-            <RadioGroup 
-              value={formData.paymentMethod}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, paymentMethod: value as 'venmo' | 'zelle' }))}
-              className="space-y-2"
-              required
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="venmo" id="payment-venmo" />
-                <Label htmlFor="payment-venmo" className="cursor-pointer">
-                  Venmo ({BUSINESS_CONFIG.payment.venmo.handle})
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="zelle" id="payment-zelle" />
-                <Label htmlFor="payment-zelle" className="cursor-pointer">
-                  Zelle ({BUSINESS_CONFIG.payment.zelle.phone}, {BUSINESS_CONFIG.payment.zelle.name})
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
+          <DateTimeSelection
+            deliveryDate={formData.deliveryDate || ''}
+            pickupTime={formData.pickupTime || ''}
+            deliveryOption={formData.deliveryOption || 'pickup'}
+            onDeliveryDateChange={(date) => setFormData(prev => ({ ...prev, deliveryDate: date }))}
+            onPickupTimeChange={(time) => setFormData(prev => ({ ...prev, pickupTime: time }))}
+          />
 
-          {/* Allergy Agreement - Required */}
-          <div className="space-y-2">
-            <h3 className="font-medium">Allergy Disclaimer <span className="text-red-500">*</span></h3>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
-              <p className="text-sm text-yellow-800 mb-3">
-                <strong>Important:</strong> Cozy Cakey is not responsible for any allergic reactions. 
-                Our kitchen processes common allergens including wheat, eggs, dairy, nuts, and soy. 
-                Please inform us of any allergies, but consume at your own risk.
-              </p>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="allergyAgreement"
-                  checked={formData.allergyAgreement}
-                  onChange={(e) => setFormData(prev => ({ ...prev, allergyAgreement: e.target.checked }))}
-                  className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
-                  required
-                />
-                <Label htmlFor="allergyAgreement" className="cursor-pointer text-sm">
-                  I understand and agree to this disclaimer
-                </Label>
-              </div>
-            </div>
-          </div>
+          <DeliveryAddress
+            address={formData.address || ''}
+            deliveryOption={formData.deliveryOption || 'pickup'}
+            onAddressChange={handleInputChange}
+          />
 
-          {/* Questions and Comments */}
-          <div className="space-y-2">
-            <Label htmlFor="questionsComments">Questions and Comments</Label>
-            <Textarea
-              id="questionsComments"
-              name="questionsComments"
-              value={formData.questionsComments}
-              onChange={handleInputChange}
-              placeholder="Any questions or special requests?"
-              className="min-h-[100px]"
-            />
-          </div>
+          <PaymentMethod
+            paymentMethod={formData.paymentMethod || 'venmo'}
+            onPaymentMethodChange={(value) => setFormData(prev => ({ ...prev, paymentMethod: value }))}
+          />
 
-          {/* Discount Code */}
-          <div className="space-y-2">
-            <Label htmlFor="discountCode">Discount Code</Label>
-            <Input
-              id="discountCode"
-              name="discountCode"
-              value={formData.discountCode}
-              onChange={handleInputChange}
-              placeholder="Enter discount code (optional)"
-              className="w-full"
-            />
-          </div>
+          <AllergyAgreement
+            allergyAgreement={formData.allergyAgreement || false}
+            onAllergyAgreementChange={(checked) => setFormData(prev => ({ ...prev, allergyAgreement: checked }))}
+          />
+
+          <QuestionsComments
+            questionsComments={formData.questionsComments || ''}
+            onQuestionsCommentsChange={handleInputChange}
+          />
+
+          <DiscountCode
+            discountCode={formData.discountCode || ''}
+            onDiscountCodeChange={handleInputChange}
+          />
         </div>
 
         {/* Form Total - Spans both columns */}
