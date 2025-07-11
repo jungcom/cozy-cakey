@@ -68,31 +68,3 @@ export async function submitOrder(orderData: Order) {
   return data
 }
 
-// Function to test database connection
-export async function testConnection() {
-  try {
-    console.log('Testing Supabase connection...')
-    console.log('Supabase URL:', supabaseUrl)
-    console.log('Supabase Key (first 10 chars):', supabaseAnonKey?.substring(0, 10))
-    
-    const { data, error } = await supabase
-      .from('orders')
-      .select('count', { count: 'exact', head: true })
-
-    if (error) {
-      console.error('Database connection error:', {
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-        code: error.code
-      })
-      return false
-    }
-
-    console.log('Database connected successfully, orders count:', data)
-    return true
-  } catch (err) {
-    console.error('Unexpected error:', err)
-    return false
-  }
-}

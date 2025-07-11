@@ -33,21 +33,7 @@ export interface Cake {
   topperPricing?: { [option: string]: number }; // Mini Cake Cups only
 }
 
-// Available cake flavors
-export const cakeFlavors = [
-  'Vanilla',
-  'Chocolate',
-  'Strawberry'
-] as const;
 
-export type CakeFlavor = typeof cakeFlavors[number];
-
-// Available cake sizes
-export const sizes: Size[] = [
-  { id: 'small', name: 'Small (6\")', servings: '6-8', price: 0 },
-  { id: 'medium', name: 'Medium (8\")', servings: '10-12', price: 15 },
-  { id: 'large', name: 'Large (10\")', servings: '16-20', price: 30 },
-];
 
 // Cake categories that combine both order types and featured displays
 export const cakeCategories: CakeCategory[] = [

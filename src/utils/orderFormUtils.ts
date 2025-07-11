@@ -50,38 +50,11 @@ export interface OrderFormData {
   agreedToAllergens?: string;
 }
 
-export const DEFAULT_SIZES: SizeOption[] = [
-  { id: '6', label: '6" (Serves 8-10)', price: 35 },
-  { id: '8', label: '8" (Serves 12-16)', price: 45 },
-  { id: '10', label: '10" (Serves 20-25)', price: 55 },
-  { id: '12', label: '12" (Serves 30-35)', price: 65 },
-] as const;
-
-export const DEFAULT_FLAVORS = [
-  'Vanilla',
-  'Chocolate'
-] as const;
 
 export function getDefaultDeliveryDate(): string {
   return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 }
 
-export const BASE_COLORS = [
-  { value: 'white', label: 'White (Free)', price: 0 },
-  { value: 'baby_pink', label: 'Baby Pink (+$3)', price: 3 },
-  { value: 'baby_blue', label: 'Baby Blue (+$3)', price: 3 },
-  { value: 'lavender', label: 'Lavender (+$3)', price: 3 },
-  { value: 'custom', label: 'Custom Color (+$3)', price: 3 },
-] as const;
-
-export const CANDY_CROWN_COLORS = [
-  { value: 'white', label: 'White/Transparent (Free)', price: 0 },
-  { value: 'baby_pink', label: 'Baby Pink (+$3)', price: 3 },
-  { value: 'navy_blue', label: 'Navy Blue (+$3)', price: 3 },
-  { value: 'lavender', label: 'Lavender (+$3)', price: 3 },
-  { value: 'black', label: 'Black (+$3)', price: 3 },
-  { value: 'custom', label: 'Other Color (+$3)', price: 3 },
-] as const;
 
 export const PICKUP_TIMES = [
   '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', 
@@ -164,40 +137,7 @@ export function calculateCakeTotalPrice(
   return total;
 }
 
-// Keep old function for backward compatibility, but mark as deprecated
-export function calculateTotalPrice(
-  size: CakeSize, 
-  baseColor: string = 'white',
-  candyCrownColor: string = 'white',
-  lettering: string = '',
-  sizes: SizeOption[] = DEFAULT_SIZES
-): number {
-  const selectedSize = sizes.find(s => s.id === size) || sizes[1];
-  let total = selectedSize.price;
-  
-  // Add base color cost
-  const baseColorOption = BASE_COLORS.find(c => c.value === baseColor);
-  if (baseColorOption) {
-    total += baseColorOption.price;
-  }
-  
-  // Add candy crown color cost
-  const crownColorOption = CANDY_CROWN_COLORS.find(c => c.value === candyCrownColor);
-  if (crownColorOption) {
-    total += crownColorOption.price;
-  }
-  
-  // Add lettering cost
-  if (lettering.trim().length > 0) {
-    total += 5;
-  }
-  
-  return total;
-}
 
-export function getTodaysDate(): string {
-  return new Date().toISOString().split('T')[0];
-}
 
 // Helper functions to generate options from cake data
 export function getSizeOptionsFromCake(cake: Cake): Array<{id: string, label: string, price: number}> {

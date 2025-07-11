@@ -46,18 +46,6 @@ export function formatDateInBusinessTimezone(
   }
 }
 
-/**
- * Gets current date in business timezone
- * @returns Date object representing current time in business timezone
- */
-export function getCurrentDateInBusinessTimezone(): Date {
-  // Create a new date and adjust for timezone offset
-  const now = new Date();
-  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-  // EST is UTC-5, EDT is UTC-4. Use -5 as default (can be enhanced)
-  const offset = -5; // Eastern Standard Time offset
-  return new Date(utc + (offset * 3600000));
-}
 
 /**
  * Converts a date to business timezone for comparison purposes

@@ -8,7 +8,6 @@
   --primary: #fce1e3;
   --secondary: #d69b9b;
   --tertiary: #b37a7a;
-  --accent: #fce1e3;
 }
 
 body {
@@ -53,9 +52,6 @@ a:hover, button:hover {
   background-color: var(--tertiary);
 }
 
-.border-tertiary {
-  border-color: var(--tertiary);
-}
 
 .text-primary {
   color: var(--primary);
