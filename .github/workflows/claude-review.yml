@@ -39,21 +39,82 @@ jobs:
 
     - name: Claude Code Review
       if: steps.changed-files.outputs.any_changed == 'true'
-      uses: anthropics/claude-action@v1
-      with:
-        anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-        files: ${{ steps.changed-files.outputs.all_changed_files }}
-        prompt: |
-          Please review the following code changes for:
-          1. Code quality and best practices
-          2. Potential bugs or security issues
-          3. Performance considerations
-          4. Maintainability and readability
-          5. Adherence to project conventions
-          
-          Provide constructive feedback and suggestions for improvement.
-          Focus on the most important issues and be concise.
+      env:
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.number }}
+        REPO_NAME: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.sha }}
+      run: |
+        # Install jq for JSON processing
+        sudo apt-get update && sudo apt-get install -y jq
         
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        create-comment: true
-        max-tokens: 2000
+        # Get the changed files
+        changed_files="${{ steps.changed-files.outputs.all_changed_files }}"
+        
+        # Create a temporary file to store the code content
+        echo "## Code Review by Claude" > review_comment.md
+        echo "" >> review_comment.md
+        
+        # Process each changed file
+        for file in $changed_files; do
+          if [ -f "$file" ]; then
+            echo "Reviewing $file..."
+            
+            # Read file content
+            file_content=$(cat "$file")
+            
+            # Create prompt for Claude
+            prompt="Please review this code file: $file
+
+        Code content:
+        \`\`\`
+        $file_content
+        \`\`\`
+
+        Please provide a concise code review focusing on:
+        1. Code quality and best practices
+        2. Potential bugs or security issues
+        3. Performance considerations
+        4. Maintainability and readability
+
+        Be constructive and specific. If the code looks good, say so briefly."
+
+            # Call Claude API
+            response=$(curl -s -X POST "https://api.anthropic.com/v1/messages" \
+              -H "Content-Type: application/json" \
+              -H "x-api-key: $ANTHROPIC_API_KEY" \
+              -H "anthropic-version: 2023-06-01" \
+              -d '{
+                "model": "claude-3-sonnet-20240229",
+                "max_tokens": 1000,
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "'"$(echo "$prompt" | sed 's/"/\\"/g' | sed 's/$/\\n/' | tr -d '\n')"'"
+                  }
+                ]
+              }')
+            
+            # Extract the review from the response
+            review=$(echo "$response" | jq -r '.content[0].text // "Error: Could not get review"')
+            
+            # Add to comment
+            echo "### 📁 $file" >> review_comment.md
+            echo "$review" >> review_comment.md
+            echo "" >> review_comment.md
+          fi
+        done
+        
+        # Post comment on PR if this is a PR event
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          comment_body=$(cat review_comment.md)
+          curl -s -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://api.github.com/repos/$REPO_NAME/issues/$PR_NUMBER/comments" \
+            -d "{\"body\":\"$(echo "$comment_body" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')\"}"
+        fi
+        
+        # Always output the review
+        cat review_comment.md
