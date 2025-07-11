@@ -35,6 +35,7 @@ export interface Order {
   customer_type: string
   delivery_option: string
   address?: string
+  delivery_fee?: number
   payment_method: string
   allergy_agreement: boolean
   questions_comments?: string
